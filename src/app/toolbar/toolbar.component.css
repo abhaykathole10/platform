@@ -1,0 +1,43 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: hsl(340, 85%, 98%);
+  border: 1px solid #ccc;
+}
+
+.toolbar input[type="text"] {
+  width: 8rem;
+}
+
+.toolbar input[type="text"]:read-only {
+  cursor: not-allowed;
+}
+.team-input {
+  max-height: 25px;
+}
+.toolbar button {
+  min-width: 102px;
+  padding: 2px 4px;
+}
+.side-switch-button {
+  margin-left: auto;
+}
+.brand-name {
+  color: rgb(94, 5, 85);
+  text-decoration: none;
+  font-size: x-large;
+}
+
+.readonly-input {
+  background-color: #f0f0f0;
+  border: none;
+}
+
+.mode-class {
+  width: 8rem;
+  font-weight: bold;
+  text-align: center;
+  background-color: rgb(245, 245, 16);
+}

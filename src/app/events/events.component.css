@@ -1,0 +1,50 @@
+.container-event-data {
+  border: 1px solid red;
+  height: auto;
+  max-height: 10rem;
+  overflow: auto;
+  font-size: small;
+  text-align: center;
+}
+.resizable-container {
+  border: 1px solid red;
+  height: auto;
+  max-height: 10rem;
+  max-width: 50rem;
+  padding: 0;
+  resize: both;
+  overflow: auto;
+}
+.action-buttons {
+  display: flex;
+}
+.action-button {
+  font-size: 10px;
+  font-weight: bold;
+  margin: 5px;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  border: 1px solid #dddddd;
+  text-align: center;
+  padding: 5px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+.delBtn {
+  padding: 2px;
+  text-align: center;
+}
+
+.delBtn button {
+  cursor: pointer;
+}

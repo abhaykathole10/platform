@@ -1,0 +1,86 @@
+<!-- TOOLBAR -->
+<app-toolbar
+  #toolbar
+  [areAllPlayersFilled]="areAllPlayersFilled"
+  [editModeON]="editModeON"
+  [videoUploaded]="videoUploaded"
+  (taggingButtonClicked)="taggingButtonClicked($event)"
+  (onVideoUpload)="onVideoUpload($event)"
+  (switchSideButtonClicked)="onSwitchSide()"
+></app-toolbar>
+
+<div class="parent-container">
+  <div class="resizable-div" [style.resize]="editModeON ? 'both' : 'none'">
+    <!-- LOCAL VIDEO UPLOAD -->
+    <video
+      #localVideoPlayer
+      *ngIf="localUpload && format === 'video' && url"
+      class="video-player"
+      [src]="url"
+      height="auto"
+      controls
+    ></video>
+
+    <!-- YOUTUBE VIDEO UPLOAD -->
+    <iframe
+      *ngIf="youtubeUpload"
+      class="video-player"
+      [src]="url | safe"
+      height="100%"
+      frameborder="0"
+      allowfullscreen
+    ></iframe>
+  </div>
+  <div class="fill-div">
+    <!-- PITCH -->
+    <div
+      #pitchContainer
+      class="pitch-class"
+      [style.transform]="switchSide ? 'rotate(180deg)' : ''"
+      (mousedown)="handleMapMouseDown($event)"
+      (mouseup)="handleMapMouseUp($event)"
+    >
+      <!-- PLAYERS -->
+      <!-- goalkeeper -->
+      <ng-container *ngIf="showPlayers">
+        <div
+          *ngFor="let player of allPlayers"
+          id="{{ player.id }}"
+          class="player {{ player.class }}"
+          (click)="handleClick(player.id)"
+          [ngClass]="{ 'div-disabled': !editModeON }"
+          [style.transform]="switchSide ? 'rotate(180deg)' : ''"
+        >
+          {{ player.jersey }}
+          {{ player.name }}
+        </div>
+      </ng-container>
+    </div>
+    <!-- subtags -->
+    <div class="subtags-div">
+      <div class="subtags-grid">
+        <div *ngFor="let subtag of allSubTags" [class.disableSubtags]="false">
+          {{ subtag.subtagname }}
+        </div>
+      </div>
+    </div>
+    <!-- goal map -->
+    <div class="goal-div pt-1">
+      <div class="goal-grid">
+        <div>Top left</div>
+        <div>Top</div>
+        <div>Top-right</div>
+        <div>left</div>
+        <div></div>
+        <div>right</div>
+        <div>left-bottom</div>
+        <div></div>
+        <div>right-bottom</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <app-events></app-events>
+</div>

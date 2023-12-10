@@ -1,0 +1,117 @@
+<div class="container-fluid py-0">
+  <div class="row">
+    <div class="col p-0">
+      <div class="toolbar py-0" style="height: 2rem">
+        <a href="#"
+          ><img
+            src="../../assets/logo-ball-no-bg.png"
+            alt="logo"
+            style="width: 2rem"
+        /></a>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-success"
+          data-bs-toggle="modal"
+          data-bs-target="#selectVideo"
+          (click)="openModalClicked()"
+        >
+          Load video
+        </button>
+        <input
+          #teamInput
+          type="text"
+          class="team-input"
+          [(ngModel)]="currentTeam"
+          placeholder="Enter team name"
+          [readOnly]="teamReadOnly"
+          [ngClass]="{ 'readonly-input': teamReadOnly }"
+        />
+
+        <div class="form-check form-switch">
+          <input
+            #switchButton
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="mode-switch"
+            [disabled]="!areAllPlayersFilled || !currentTeam"
+            [(ngModel)]="switchValue"
+            (click)="onTaggingButtonClicked(switchButton)"
+          />
+          <label class="form-check-label mode-class" for="mode-switch">{{
+            currentMode
+          }}</label>
+        </div>
+
+        <div class="form-check form-switch side-switch-button">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="side-switch"
+            (click)="switchSideButtonClicked.emit()"
+          />
+          <label class="form-check-label" for="side-switch">Switch sides</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  #selectVideo
+  class="modal fade"
+  id="selectVideo"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          Please select video
+        </h1>
+        <button
+          #closeModal
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <input
+          type="text"
+          class="form-control"
+          id="recipient-name"
+          placeholder="Paste YouTube URL"
+          [(ngModel)]="videoYtUrl"
+          (change)="handleYoutubeUpload()"
+        />
+
+        <label for="message-text" class="col-form-label">or</label><br />
+        <input
+          #fileInput
+          class="video-file"
+          type="file"
+          (change)="onSelectFile($event)"
+        />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          [disabled]="!videoUploaded"
+          type="button"
+          class="btn btn-primary"
+          (click)="onDoneClick()"
+        >
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

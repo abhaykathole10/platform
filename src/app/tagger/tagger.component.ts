@@ -16,7 +16,7 @@ type Lineup = {
 })
 export class TaggerComponent {
   lineup: Lineup = {
-    p1: { name: 'a', jersey: '1' },
+    p1: { name: 'Cris', jersey: '7' },
     p2: { name: 'John', jersey: '4' },
     p3: { name: 'Stalin', jersey: '13' },
     p4: { name: 'Pope', jersey: '19' },
@@ -35,75 +35,6 @@ export class TaggerComponent {
     name: this.lineup[key].name,
     class: key,
   }));
-
-  // allPlayers = [
-  //   {
-  //     id: 'p1',
-  //     jersey: this.lineup['p1'].jersey,
-  //     name: this.lineup['p1'].name,
-  //     class: 'p1',
-  //   },
-  //   {
-  //     id: 'p2',
-  //     jersey: this.lineup['p2'].jersey,
-  //     name: this.lineup['p2'].name,
-  //     class: 'p2',
-  //   },
-  //   {
-  //     id: 'p3',
-  //     jersey: this.lineup['p3'].jersey,
-  //     name: this.lineup['p3'].name,
-  //     class: 'p3',
-  //   },
-  //   {
-  //     id: 'p4',
-  //     jersey: this.lineup['p4'].jersey,
-  //     name: this.lineup['p4'].name,
-  //     class: 'p4',
-  //   },
-  //   {
-  //     id: 'p5',
-  //     jersey: this.lineup['p5'].jersey,
-  //     name: this.lineup['p5'].name,
-  //     class: 'p5',
-  //   },
-  //   {
-  //     id: 'p6',
-  //     jersey: this.lineup['p6'].jersey,
-  //     name: this.lineup['p6'].name,
-  //     class: 'p6',
-  //   },
-  //   {
-  //     id: 'p7',
-  //     jersey: this.lineup['p7'].jersey,
-  //     name: this.lineup['p7'].name,
-  //     class: 'p7',
-  //   },
-  //   {
-  //     id: 'p8',
-  //     jersey: this.lineup['p8'].jersey,
-  //     name: this.lineup['p8'].name,
-  //     class: 'p8',
-  //   },
-  //   {
-  //     id: 'p9',
-  //     jersey: this.lineup['p9'].jersey,
-  //     name: this.lineup['p9'].name,
-  //     class: 'p9',
-  //   },
-  //   {
-  //     id: 'p10',
-  //     jersey: this.lineup['p10'].jersey,
-  //     name: this.lineup['p10'].name,
-  //     class: 'p10',
-  //   },
-  //   {
-  //     id: 'p11',
-  //     jersey: this.lineup['p11'].jersey,
-  //     name: this.lineup['p11'].name,
-  //     class: 'p11',
-  //   },
-  // ];
 
   allSubTags = [
     { subtagname: 'Assist', category: 'pass' },

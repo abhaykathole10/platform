@@ -1,13 +1,13 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { DataItem, coordinate } from '../models/event-data.model';
+import {
+  DataItem,
+  Player,
+  Subtag,
+  coordinate,
+} from '../models/event-data.model';
 import { EventService } from '../services/event.service';
-
-type Lineup = {
-  [key: string]: {
-    name: string;
-    jersey: string;
-  };
-};
+import { PlayersService } from '../services/players.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-tagger',
@@ -15,122 +15,142 @@ type Lineup = {
   styleUrls: ['./tagger.component.css'],
 })
 export class TaggerComponent {
-  lineup: Lineup = {
-    p1: { name: 'a', jersey: '1' },
-    p2: { name: 'John', jersey: '4' },
-    p3: { name: 'Stalin', jersey: '13' },
-    p4: { name: 'Pope', jersey: '19' },
-    p5: { name: 'Viktor', jersey: '3' },
-    p6: { name: 'Arya', jersey: '32' },
-    p7: { name: 'Susan', jersey: '92' },
-    p8: { name: 'Ursula', jersey: '11' },
-    p9: { name: 'Monica', jersey: '21' },
-    p10: { name: 'Matt', jersey: '5' },
-    p11: { name: 'Peter', jersey: '9' },
-  };
+  private playerDataSubscription: Subscription;
+  allPlayers: Player[] = [];
 
-  allPlayers = Object.keys(this.lineup).map((key) => ({
-    id: key,
-    jersey: this.lineup[key].jersey,
-    name: this.lineup[key].name,
-    class: key,
-  }));
+  allSubTags: Subtag[] = [
+    // PASS
+    {
+      name: 'Assist',
+      category: ['Pass', 'Long Kick', 'Cross', 'Free Kick', 'Corner'],
+      disabled: true,
+      clicked: false,
+    },
+    {
+      name: 'Key Pass',
+      category: ['Pass', 'Long Kick', 'Cross', 'Free Kick', 'Corner'],
+      disabled: true,
+      clicked: false,
+    },
+    {
+      name: 'Through Pass',
+      category: ['Pass'],
+      disabled: true,
+      clicked: false,
+    },
+    {
+      name: 'Clearance',
+      category: ['Pass', 'Interception'],
+      disabled: true,
+      clicked: false,
+    },
 
-  // allPlayers = [
-  //   {
-  //     id: 'p1',
-  //     jersey: this.lineup['p1'].jersey,
-  //     name: this.lineup['p1'].name,
-  //     class: 'p1',
-  //   },
-  //   {
-  //     id: 'p2',
-  //     jersey: this.lineup['p2'].jersey,
-  //     name: this.lineup['p2'].name,
-  //     class: 'p2',
-  //   },
-  //   {
-  //     id: 'p3',
-  //     jersey: this.lineup['p3'].jersey,
-  //     name: this.lineup['p3'].name,
-  //     class: 'p3',
-  //   },
-  //   {
-  //     id: 'p4',
-  //     jersey: this.lineup['p4'].jersey,
-  //     name: this.lineup['p4'].name,
-  //     class: 'p4',
-  //   },
-  //   {
-  //     id: 'p5',
-  //     jersey: this.lineup['p5'].jersey,
-  //     name: this.lineup['p5'].name,
-  //     class: 'p5',
-  //   },
-  //   {
-  //     id: 'p6',
-  //     jersey: this.lineup['p6'].jersey,
-  //     name: this.lineup['p6'].name,
-  //     class: 'p6',
-  //   },
-  //   {
-  //     id: 'p7',
-  //     jersey: this.lineup['p7'].jersey,
-  //     name: this.lineup['p7'].name,
-  //     class: 'p7',
-  //   },
-  //   {
-  //     id: 'p8',
-  //     jersey: this.lineup['p8'].jersey,
-  //     name: this.lineup['p8'].name,
-  //     class: 'p8',
-  //   },
-  //   {
-  //     id: 'p9',
-  //     jersey: this.lineup['p9'].jersey,
-  //     name: this.lineup['p9'].name,
-  //     class: 'p9',
-  //   },
-  //   {
-  //     id: 'p10',
-  //     jersey: this.lineup['p10'].jersey,
-  //     name: this.lineup['p10'].name,
-  //     class: 'p10',
-  //   },
-  //   {
-  //     id: 'p11',
-  //     jersey: this.lineup['p11'].jersey,
-  //     name: this.lineup['p11'].name,
-  //     class: 'p11',
-  //   },
-  // ];
+    // SHOT
+    {
+      name: 'Goal',
+      category: ['Shot', 'Free Kick', 'Penalty'],
+      disabled: true,
+      clicked: false,
+    },
+    {
+      name: 'Off Target',
+      category: ['Shot', 'Penalty'],
+      disabled: true,
+      clicked: false,
+    },
+    {
+      name: 'Blocked',
+      category: ['Shot', 'Penalty'],
+      disabled: true,
+      clicked: false,
+    },
+    {
+      name: 'Saved',
+      category: ['Shot', 'Penalty'],
+      disabled: true,
+      clicked: false,
+    },
 
-  allSubTags = [
-    { subtagname: 'Assist', category: 'pass' },
-    { subtagname: 'Through ball', category: 'pass' },
-    { subtagname: 'SCP', category: ['pass', 'shot'] },
-    { subtagname: 'CPLT', category: 'pass' },
-    { subtagname: 'INCPLT', category: 'pass' },
-    { subtagname: 'Goal', category: 'shot' },
-    { subtagname: 'Right', category: 'shot' },
-    { subtagname: 'Left', category: 'shot' },
-    { subtagname: 'Head', category: 'shot' },
-    { subtagname: 'Off-target', category: 'shot' },
-    { subtagname: 'Saved', category: 'shot' },
-    { subtagname: 'Assist', category: 'pass' },
-    { subtagname: 'Assist', category: 'pass' },
-    { subtagname: 'Assist', category: 'pass' },
-    { subtagname: 'Assist', category: 'pass' },
-    { subtagname: 'Assist', category: 'pass' },
-    { subtagname: 'Assist', category: 'pass' },
-    { subtagname: 'Assist', category: 'pass' },
-    { subtagname: 'Assist', category: 'pass' },
-    { subtagname: 'Assist', category: 'pass' },
-    { subtagname: 'Assist', category: 'pass' },
-    { subtagname: 'Assist', category: 'pass' },
-    { subtagname: 'Assist', category: 'pass' },
-    { subtagname: 'Assist', category: 'pass' },
+    // FOOT
+    {
+      name: 'Right',
+      category: ['Shot', 'Save', 'Take On', 'Cross'],
+      disabled: true,
+      clicked: false,
+    },
+    {
+      name: 'Left',
+      category: ['Shot', 'Save', 'Take On', 'Cross'],
+      disabled: true,
+      clicked: false,
+    },
+    { name: 'Header', category: ['Shot'], disabled: true, clicked: false },
+
+    // FOUL
+    { name: 'Yellow Card', category: ['Foul'], disabled: true, clicked: false },
+    { name: 'Red Card', category: ['Foul'], disabled: true, clicked: false },
+    { name: 'Hand Ball', category: ['Foul'], disabled: true, clicked: false },
+
+    // COMPLETION
+    {
+      name: 'Complete',
+      category: ['Pass', 'Take On', 'Tackle', 'Long Kick'],
+      disabled: true,
+      clicked: false,
+    },
+    {
+      name: 'Incomplete',
+      category: ['Pass', 'Take On', 'Tackle', 'Long Kick'],
+      disabled: true,
+      clicked: false,
+    },
+
+    //other
+    { name: 'Assist', category: ['pass'], disabled: true, clicked: false },
+    { name: 'Assist', category: ['pass'], disabled: true, clicked: false },
+    { name: 'Assist', category: ['pass'], disabled: true, clicked: false },
+    { name: 'Assist', category: ['pass'], disabled: true, clicked: false },
+    { name: 'Assist', category: ['pass'], disabled: true, clicked: false },
+    { name: 'Assist', category: ['pass'], disabled: true, clicked: false },
+    { name: 'Assist', category: ['pass'], disabled: true, clicked: false },
+    { name: 'Assist', category: ['pass'], disabled: true, clicked: false },
   ];
+
+  allGoalParts: string[] = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    'Top left',
+    'Top',
+    'Top right',
+    '7',
+    '8',
+    'Left',
+    'Middle',
+    'Right',
+    '9',
+    '10',
+    'Bootom left',
+    'Bottom',
+    'Bottom right',
+    '11',
+  ];
+
+  trackableEvents: string[] = [
+    'Pass',
+    'Goal Kick',
+    'Long Kick',
+    'Cross',
+    'Free Kick',
+    'Throw In',
+    'Carry',
+    'Corner',
+  ];
+
+  subtagsSelected: string[] = [];
 
   editModeON = true;
   showPlayers = true;
@@ -162,13 +182,22 @@ export class TaggerComponent {
 
   @ViewChild('pitchContainer') pitchContainer: ElementRef;
 
-  constructor(private eventService: EventService) {}
+  constructor(
+    private eventService: EventService,
+    private playerService: PlayersService
+  ) {}
 
   ngOnInit(): void {
-    if (this.allPlayersEnteredSuccessfully(this.lineup)) {
+    this.playerDataSubscription = this.playerService
+      .getPlayerDataObservable()
+      .subscribe((data) => {
+        this.allPlayers = data;
+      });
+    this.allPlayers = this.playerService.getPlayerData();
+    if (this.allPlayersEnteredSuccessfully(this.allPlayers)) {
       this.areAllPlayersFilled = true;
     }
-    this.loadAllPlayers();
+    this.resetAll();
   }
 
   onSwitchSide() {
@@ -189,7 +218,7 @@ export class TaggerComponent {
   }
 
   taggingButtonClicked(event: any) {
-    if (!this.allPlayersEnteredSuccessfully(this.lineup)) {
+    if (!this.allPlayersEnteredSuccessfully(this.allPlayers)) {
       alert('Some Players are missing!');
     } else {
       this.editModeON = event.isEditable;
@@ -202,12 +231,10 @@ export class TaggerComponent {
     }
   }
 
-  allPlayersEnteredSuccessfully(playerObject: any) {
-    for (const key in playerObject) {
-      if (playerObject.hasOwnProperty(key)) {
-        if (playerObject[key].name === '' || playerObject[key].jersey === '') {
-          return false;
-        }
+  allPlayersEnteredSuccessfully(players: Player[]) {
+    for (const player of players) {
+      if (player.name === '' || player.jersey === '') {
+        return false;
       }
     }
     return true;
@@ -220,79 +247,159 @@ export class TaggerComponent {
   @HostListener('document:keydown', ['$event'])
   handleKeyPress(event: KeyboardEvent) {
     if (this.currentPlayerJersey && this.currentPlayerName) {
-      switch (event.key) {
-        case 'p':
-          this.currentEvent = 'pass';
-          console.log('Event is PASS');
+      switch (event.key + event.location) {
+        case '0' + 3: // NUM 0 -> PASS
+          this.currentEvent = 'Pass';
           break;
-        case 's':
-          this.currentEvent = 'shot';
-          console.log('Event is SHOT');
+        case '+' + 3: // NUM + is SHOT
+          this.currentEvent = 'Shot';
           break;
+        case 'AudioVolumeMute' + 0: // MUTE is SAVE
+          this.currentEvent = 'Save';
+          break;
+        case 'ArrowRight' + 0: // < is TAKE ON
+          this.currentEvent = 'Take On';
+          break;
+        case 'ArrowLeft' + 0: // > is TACKLE
+          this.currentEvent = 'Tackle';
+          break;
+        case 'Insert' + 0: // Insert is GOAL KICK
+          this.currentEvent = 'Goal Kick';
+          break;
+        case '5' + 3: // NUM 5 is LONG KICK
+          this.currentEvent = 'Long Kick';
+          break;
+        case '6' + 3: // NUM 6 is CROSS
+          this.currentEvent = 'Cross';
+          break;
+        case '4' + 3: // NUM 4 is INTERCEPTION
+          this.currentEvent = 'Interception';
+          break;
+        case '/' + 3: // / is FREE KICK
+          this.currentEvent = 'Free Kick';
+          break;
+        case 'Enter' + 3: // enter is THROW IN
+          this.currentEvent = 'Throw In';
+          break;
+        case 'Delete' + 3: // enter is PRESSURE
+          this.currentEvent = 'Pressure';
+          break;
+        case 'F12' + 0: // F12 is FOUL
+          this.currentEvent = 'Foul';
+          break;
+        case 'PageUp' + 0: // PageUp is CARRY
+          this.currentEvent = 'Carry';
+          break;
+        case 'End' + 0: // End is RECOVERY
+          this.currentEvent = 'Recovery';
+          break;
+        case 'NumLock' + 3: // Numlock is CORNER
+          this.currentEvent = 'Corner';
+          break;
+        case 'F11' + 0: // F11 is OFFSIDE
+          this.currentEvent = 'Offside';
+          break;
+        case 'F10' + 0: // F10 is PENALTY
+          this.currentEvent = 'Penalty';
+          break;
+        case 'Delete' + 0: // Delete(normal) is BALL OUT
+          this.currentEvent = 'Ball Out';
+          break;
+      }
+      this.enableSubtags(this.currentEvent);
+    }
+  }
+
+  enableSubtags(mainTag: string) {
+    for (let subtag of this.allSubTags) {
+      if (subtag.category.includes(mainTag)) {
+        subtag.disabled = false;
       }
     }
   }
 
-  loadAllPlayers() {
-    this.allPlayers = Object.keys(this.lineup).map((key) => ({
-      id: key,
-      jersey: this.lineup[key].jersey,
-      name: this.lineup[key].name,
-      class: key,
-    }));
-  }
+  selectedPlayerIndex: number | null = null;
 
-  handleClick(player: string) {
+  handlePlayerClick(selectedPlayer: Player) {
     if (this.editModeON) {
       const plyJersey = prompt('Enter jersey');
       const plyName = prompt('Enter player name');
 
       if (plyJersey !== null && plyName !== null) {
-        const updatedLineup = { ...this.lineup };
-        updatedLineup[player] = {
-          ...updatedLineup[player],
-          jersey: plyJersey,
-          name: plyName,
-        };
+        const updatedLineup = [...this.allPlayers];
+        const playerIndex = updatedLineup.findIndex(
+          (player) => player.id === selectedPlayer.id
+        );
+        if (playerIndex !== -1) {
+          updatedLineup[playerIndex] = {
+            ...updatedLineup[playerIndex],
+            jersey: plyJersey,
+            name: plyName,
+          };
+        }
 
-        // Update the lineup object reference
-        this.lineup = updatedLineup;
+        this.allPlayers = updatedLineup;
+        this.playerService.updatePlayerData(this.allPlayers);
 
-        // Update allPlayers array
-        this.loadAllPlayers();
-
-        if (this.allPlayersEnteredSuccessfully(this.lineup)) {
+        if (this.allPlayersEnteredSuccessfully(this.allPlayers)) {
           this.areAllPlayersFilled = true;
         }
       }
     } else {
-      this.currentPlayerJersey = this.lineup[player].jersey;
-      this.currentPlayerName = this.lineup[player].name;
+      for (let player of this.allPlayers) {
+        if (player.id === selectedPlayer.id) {
+          this.currentPlayerJersey = player.jersey;
+          this.currentPlayerName = player.name;
+        }
+      }
       this.showPlayers = false;
     }
   }
 
+  handleSubtagClick(subtag: Subtag) {
+    if (subtag) {
+      if (subtag.clicked === false) {
+        this.subtagsSelected.push(subtag.name);
+        subtag.clicked = true;
+      } else {
+        subtag.clicked = false;
+        const removedSubtagIndex = this.subtagsSelected.indexOf(subtag.name);
+        if (removedSubtagIndex !== -1) {
+          this.subtagsSelected.splice(removedSubtagIndex, 1);
+        }
+      }
+    }
+  }
+
+  // ngAfterViewInit() {
+  //   // Access the native element after the view has been initialized
+  //   console.log('ngAfter view Init =>  ', this.pitchContainer.nativeElement);
+  // }
+
   handleMapMouseDown(event: MouseEvent) {
     if (!this.showPlayers) {
-      const x = event.offsetX;
-      const y = event.offsetY;
+      if (this.currentEvent) {
+        const x = event.offsetX;
+        const y = event.offsetY;
 
-      const normalizedX = Math.round(
-        (x / this.pitchContainer.nativeElement.offsetWidth) * this.xScale
-      ).toString();
-      const normalizedY = Math.round(
-        (y / this.pitchContainer.nativeElement.offsetHeight) * this.yScale
-      ).toString();
+        const normalizedX = Math.round(
+          (x / this.pitchContainer.nativeElement.offsetWidth) * this.xScale
+        ).toString();
+        const normalizedY = Math.round(
+          (y / this.pitchContainer.nativeElement.offsetHeight) * this.yScale
+        ).toString();
 
-      this.startCoordinates = { x: normalizedX, y: normalizedY };
-
-      console.log(`Start Coordinates: (${normalizedX}, ${normalizedY})`);
+        this.startCoordinates = { x: normalizedX, y: normalizedY };
+      } else alert('Please select main event');
     }
   }
 
   handleMapMouseUp(event: MouseEvent) {
     if (!this.showPlayers) {
-      if (this.startCoordinates) {
+      if (
+        this.startCoordinates &&
+        this.trackableEvents.includes(this.currentEvent)
+      ) {
         const x = event.offsetX;
         const y = event.offsetY;
 
@@ -307,26 +414,41 @@ export class TaggerComponent {
           x: normalizedX,
           y: normalizedY,
         };
+      } else this.endCoordinates = { x: '0', y: '0' };
 
-        console.log(`End Coordinates: (${normalizedX}, ${normalizedY})`);
-
-        this.eventCoordinates = {
-          team: this.currentTeam,
-          jersey: this.currentPlayerJersey,
-          name: this.currentPlayerName,
-          event: this.currentEvent,
-          subtag: this.currentPlayerName,
-          start: this.startCoordinates,
-          end: this.endCoordinates,
-        };
-
-        console.log(this.eventCoordinates);
-
-        this.eventService.sendData(this.eventCoordinates);
-
-        this.startCoordinates = { x: '', y: '' };
-      }
-      this.showPlayers = true;
+      this.exportEvent();
+      this.resetAll();
     }
+  }
+
+  exportEvent() {
+    this.eventCoordinates = {
+      id: new Date().getTime().toString(),
+      team: this.currentTeam,
+      jersey: this.currentPlayerJersey,
+      name: this.currentPlayerName,
+      event: this.currentEvent,
+      subtags: this.subtagsSelected,
+      start: this.startCoordinates,
+      end: this.endCoordinates,
+    };
+
+    this.eventService.addEventData(this.eventCoordinates);
+  }
+
+  resetAll() {
+    this.showPlayers = true;
+    this.currentEvent = '';
+    this.subtagsSelected = [];
+    this.startCoordinates = { x: '', y: '' };
+    for (let subtag of this.allSubTags) {
+      subtag.disabled = true;
+      subtag.clicked = false;
+    }
+  }
+
+  ngOnDestroy() {
+    // Unsubscribe to avoid memory leaks
+    this.playerDataSubscription.unsubscribe();
   }
 }

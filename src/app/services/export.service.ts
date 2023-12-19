@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { DataItem } from '../models/event-data.model';
 
 @Injectable({
   providedIn: 'root',
@@ -25,25 +26,25 @@ export class ExportService {
     }
   }
 
-  private convertToCsv(data: any[]): string {
-    // const csvHeader = Object.keys(data[0]).join(',');
-    // const csvRows = data.map((item) => Object.values(item).join(','));
-    // return csvHeader + '\n' + csvRows.join('\n');
-
+  private convertToCsv(data: DataItem[]): string {
     // Define the headers for your CSV
-    const csvHeader = 'X,Y,X2,Y2';
+    const csvHeader = 'Team,Jersey,Name,Event,Sub-Tag,x1,y1,x2,y2';
 
     // Map each item in the data array to extract the desired properties
     const csvRows = data.map((item) => {
-      // Extract the properties you want
-      const { start, end } = item;
-      const X = start.x || '';
-      const Y = start.y || '';
-      const X2 = end.x || '';
-      const Y2 = end.y || '';
+      const { team, jersey, name, event, subtags, start, end } = item;
+
+      // Join the subtags array into a single comma-separated string and wrap it in double quotes
+      const formattedSubtags = `"${subtags.join(', ')}"`;
+
+      // Extract x and y from start and end coordinates
+      const x1 = start.x || '';
+      const y1 = start.y || '';
+      const x2 = end.x || '';
+      const y2 = end.y || '';
 
       // Join the extracted properties as a CSV row
-      return `${X},${Y},${X2},${Y2}`;
+      return `${team},${jersey},${name},${event},${formattedSubtags},${x1},${y1},${x2},${y2}`;
     });
 
     // Join the header and rows with newline characters to form the CSV content

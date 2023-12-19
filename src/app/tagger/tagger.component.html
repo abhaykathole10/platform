@@ -9,8 +9,10 @@
   (switchSideButtonClicked)="onSwitchSide()"
 ></app-toolbar>
 
+<!-- PARENT CONTAINER -->
 <div class="parent-container">
-  <div class="resizable-div" [style.resize]="editModeON ? 'both' : 'none'">
+  <!-- RESIZABLE CONTAINER -->
+  <div class="resizable-div">
     <!-- LOCAL VIDEO UPLOAD -->
     <video
       #localVideoPlayer
@@ -31,6 +33,8 @@
       allowfullscreen
     ></iframe>
   </div>
+
+  <!-- PITCH and SUBTAGS CONTAINER -->
   <div class="fill-div">
     <!-- PITCH -->
     <div
@@ -41,14 +45,16 @@
       (mouseup)="handleMapMouseUp($event)"
     >
       <!-- PLAYERS -->
-      <!-- goalkeeper -->
       <ng-container *ngIf="showPlayers">
         <div
-          *ngFor="let player of allPlayers"
-          id="{{ player.id }}"
-          class="player {{ player.class }}"
-          (click)="handleClick(player.id)"
-          [ngClass]="{ 'div-disabled': !editModeON }"
+          *ngFor="let player of allPlayers; let i = index"
+          [id]="player.id"
+          [class]="player.class"
+          (click)="handlePlayerClick(player)"
+          [ngClass]="{
+            player: true,
+            'div-disabled': !editModeON
+          }"
           [style.transform]="switchSide ? 'rotate(180deg)' : ''"
         >
           {{ player.jersey }}
@@ -56,26 +62,27 @@
         </div>
       </ng-container>
     </div>
-    <!-- subtags -->
-    <div class="subtags-div">
+
+    <!-- SUBTAGS -->
+    <div class="subtags-div pt-1">
       <div class="subtags-grid">
-        <div *ngFor="let subtag of allSubTags" [class.disableSubtags]="false">
-          {{ subtag.subtagname }}
+        <div
+          *ngFor="let subtag of allSubTags"
+          [ngClass]="{
+            disableSubtags: subtag.disabled,
+            subtagSelected: subtag.clicked
+          }"
+          (click)="handleSubtagClick(subtag)"
+        >
+          {{ subtag.name }}
         </div>
       </div>
     </div>
-    <!-- goal map -->
+
+    <!-- GOAL SKELETON -->
     <div class="goal-div pt-1">
       <div class="goal-grid">
-        <div>Top left</div>
-        <div>Top</div>
-        <div>Top-right</div>
-        <div>left</div>
-        <div></div>
-        <div>right</div>
-        <div>left-bottom</div>
-        <div></div>
-        <div>right-bottom</div>
+        <div *ngFor="let part of allGoalParts">{{ part }}</div>
       </div>
     </div>
   </div>

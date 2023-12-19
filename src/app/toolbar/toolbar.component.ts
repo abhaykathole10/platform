@@ -6,6 +6,8 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+import { EventService } from '../services/event.service';
+import { PlayersService } from '../services/players.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -35,7 +37,10 @@ export class ToolbarComponent {
   currentTeam: string = '';
   teamReadOnly: boolean = false;
 
-  constructor() {}
+  constructor(
+    private eventService: EventService,
+    private playersService: PlayersService
+  ) {}
 
   @ViewChild('fileInput') fileInput: ElementRef;
 
@@ -102,5 +107,10 @@ export class ToolbarComponent {
     } else {
       alert('Please upload a video');
     }
+  }
+
+  reset() {
+    this.eventService.resetAll();
+    this.playersService.resetAllPlayers();
   }
 }

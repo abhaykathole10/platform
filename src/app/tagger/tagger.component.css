@@ -17,7 +17,7 @@
 /* NON-RESIZABLE DIV */
 .fill-div {
   flex: 1;
-  background-color: lightgray;
+  background-color: white;
   overflow: auto;
   max-height: 25rem;
   border: 1px solid green;
@@ -133,12 +133,16 @@
 }
 
 .subtags-grid div:hover {
-  background-color: #0056b3;
+  background-color: #b616a3;
 }
 
 .disableSubtags {
-  opacity: 0.6;
+  opacity: 0.2;
   pointer-events: none;
+}
+
+.subtagSelected {
+  background-color: #0056b3 !important;
 }
 
 /* GOAL MAP */
@@ -150,7 +154,7 @@
 
 .goal-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 2fr 2fr 2fr 1fr;
   grid-gap: 1px;
 }
 
@@ -179,4 +183,8 @@
 .div-disabled {
   background-color: #74cffa;
   cursor: pointer;
+}
+
+.hide-players {
+  display: none;
 }

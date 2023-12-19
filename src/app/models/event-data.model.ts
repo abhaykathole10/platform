@@ -5,19 +5,22 @@ export interface coordinate {
 }
 
 export interface DataItem {
+  id: string;
   team: string;
   jersey: string;
   name: string;
   event: string;
-  subtag: string;
+  subtags: string[];
   start: coordinate;
   end: coordinate;
 }
 
 export interface Player {
+  id: string;
   jersey: string;
   name: string;
   class: string;
+  selected: boolean;
 }
 
 export interface Squad {
@@ -38,27 +41,9 @@ export interface Squad {
   player15: Player;
 }
 
-// export class Player {
-//   constructor(public jersey: string = '', public name: string = '') {}
-// }
-
-// export class Squad {
-//   constructor(
-//     public goalKeeper: Player,
-//     public player1: Player,
-//     public player2: Player,
-//     public player3: Player,
-//     public player4: Player,
-//     public player5: Player,
-//     public player6: Player,
-//     public player7: Player,
-//     public player8: Player,
-//     public player9: Player,
-//     public layer10: Player,
-//     public layer11: Player,
-//     public layer12: Player,
-//     public layer13: Player,
-//     public layer14: Player,
-//     public player15: Player
-//   ) {}
-// }
+export interface Subtag {
+  name: string;
+  category: string[];
+  disabled: boolean;
+  clicked: boolean;
+}

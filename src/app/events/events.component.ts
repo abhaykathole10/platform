@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataItem } from '../models/event-data.model';
 import { EventService } from '../services/event.service';
 import { ExportService } from '../services/export.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-events',
@@ -11,6 +12,7 @@ import { ExportService } from '../services/export.service';
 export class EventsComponent implements OnInit {
   eventData: DataItem;
   dataItems: DataItem[] = [];
+  private eventDataSubscription: Subscription;
 
   constructor(
     private eventService: EventService,
@@ -18,16 +20,29 @@ export class EventsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.dataItems = this.eventService.getDataArray();
-    console.log('dataItems => ', this.dataItems);
+    // this.dataItems = this.eventService.getAllEvents();
+    this.eventDataSubscription = this.eventService
+      .getEventDataObservable()
+      .subscribe((data) => {
+        this.dataItems = data;
+      });
   }
 
   onDeleteLast() {
     this.eventService.removeLastEntry();
   }
 
+  deleteEvent(event: DataItem) {
+    this.eventService.deleteEventById(event.id);
+  }
+
   onExportCSV() {
-    const data = this.eventService.getDataArray();
-    this.exportService.exportToCsv(data, 'event-data.csv');
+    const eventsData = this.eventService.getAllEvents();
+    this.exportService.exportToCsv(eventsData, 'bm-events-data.csv');
+  }
+
+  ngOnDestroy() {
+    // Unsubscribe to avoid memory leaks
+    this.eventDataSubscription.unsubscribe();
   }
 }

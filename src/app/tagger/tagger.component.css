@@ -8,9 +8,9 @@
 /* RESIZABLE DIV */
 .resizable-div {
   resize: both;
-  overflow: auto;
-  width: 45rem;
-  height: 25rem;
+  overflow: hidden;
+  width: 70vw;
+  height: 75vh;
   border: 1px solid #000;
 }
 
@@ -19,7 +19,8 @@
   flex: 1;
   background-color: white;
   overflow: auto;
-  max-height: 25rem;
+  height: fit-content;
+  max-height: 80vh;
   border: 1px solid green;
 }
 

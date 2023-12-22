@@ -30,6 +30,7 @@ export interface Subtag {
   category: string[];
   disabled: boolean;
   clicked: boolean;
+  bgColor: string;
 }
 
 export interface SubEvents {

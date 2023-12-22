@@ -72,11 +72,16 @@
       <div class="subtags-grid">
         <div
           *ngFor="let subtag of allSubTags"
+          [ngStyle]="{
+            'background-color': subtag.bgColor
+          }"
           [ngClass]="{
             disableSubtags: subtag.disabled,
             subtagSelected: subtag.clicked
           }"
           (click)="handleSubtagClick(subtag)"
+          data-bs-toggle="tooltip"
+          [title]="subtag.name"
         >
           {{ subtag.name }}
         </div>

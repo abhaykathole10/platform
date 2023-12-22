@@ -38,11 +38,6 @@
   border: 1px solid red;
 }
 
-/* Switch orientation */
-/* .switch-side {
-    transform: rotate(180deg);
-  } */
-
 /* PLAYERS */
 .player {
   position: absolute;
@@ -55,7 +50,6 @@
   cursor: text;
   text-align: center;
   white-space: nowrap;
-  overflow: hidden;
   border-radius: 5px;
   border: 1px solid black;
 }
@@ -65,6 +59,7 @@
   font-size: 1vw;
   text-overflow: ellipsis;
   padding-left: 2px;
+  overflow: hidden;
 }
 
 .player:hover {

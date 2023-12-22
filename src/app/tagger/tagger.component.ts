@@ -509,10 +509,12 @@ export class TaggerComponent {
 
   @HostListener('document:keydown.backspace', ['$event'])
   handleDeleteLast(event: KeyboardEvent) {
-    if (this.eventService.getAllEvents().length && !this.latestDeleted) {
-      this.eventService.removeLatestEvent();
-      this.latestDeleted = true;
-    } else alert('Latest tag already deleted');
+    if (!this.editModeON) {
+      if (this.eventService.getAllEvents().length && !this.latestDeleted) {
+        this.eventService.removeLatestEvent();
+        this.latestDeleted = true;
+      } else alert('Latest tag already deleted');
+    }
   }
 
   // @HostListener('document:keydown.space', ['$event'])

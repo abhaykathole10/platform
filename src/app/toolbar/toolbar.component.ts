@@ -114,7 +114,9 @@ export class ToolbarComponent {
   exportToCSV() {
     const eventsData = this.eventService.getAllEvents();
     if (eventsData.length) {
-      this.exportService.exportToCsv(eventsData, 'bm-events-data.csv');
+      if (confirm('Are you sure you want to export the csv file?')) {
+        this.exportService.exportToCsv(eventsData, 'bm-events-data.csv');
+      }
     } else alert('Why export blank csv? Please tag data first');
   }
 

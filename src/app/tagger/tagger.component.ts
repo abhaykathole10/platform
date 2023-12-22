@@ -25,6 +25,7 @@ export class TaggerComponent {
       category: ['Shot', 'Save', 'Cross'],
       disabled: true,
       clicked: false,
+      bgColor: '#884dff',
     },
     {
       type: 'Foot',
@@ -32,6 +33,7 @@ export class TaggerComponent {
       category: ['Shot', 'Save', 'Cross'],
       disabled: true,
       clicked: false,
+      bgColor: '#884dff',
     },
     {
       type: 'Foot',
@@ -39,6 +41,7 @@ export class TaggerComponent {
       category: ['Shot', 'Save', 'Cross'],
       disabled: true,
       clicked: false,
+      bgColor: '#884dff',
     },
     {
       type: 'Foot',
@@ -46,50 +49,7 @@ export class TaggerComponent {
       category: ['Shot'],
       disabled: true,
       clicked: false,
-    },
-
-    // OUTCOME
-    {
-      type: 'Outcome',
-      name: 'Goal',
-      category: ['Shot', 'Free Kick', 'Penalty'],
-      disabled: true,
-      clicked: false,
-    },
-    {
-      type: 'Outcome',
-      name: 'Off Target',
-      category: ['Shot', 'Penalty'],
-      disabled: true,
-      clicked: false,
-    },
-    {
-      type: 'Outcome',
-      name: 'Blocked',
-      category: ['Shot', 'Penalty'],
-      disabled: true,
-      clicked: false,
-    },
-    {
-      type: 'Outcome',
-      name: 'Saved',
-      category: ['Shot', 'Penalty'],
-      disabled: true,
-      clicked: false,
-    },
-    {
-      type: 'Outcome',
-      name: 'Yellow Card',
-      category: ['Foul'],
-      disabled: true,
-      clicked: false,
-    },
-    {
-      type: 'Outcome',
-      name: 'Red Card',
-      category: ['Foul'],
-      disabled: true,
-      clicked: false,
+      bgColor: '#884dff',
     },
 
     // COMPLETION
@@ -99,6 +59,7 @@ export class TaggerComponent {
       category: ['Pass', 'Take On', 'Tackle', 'Long Kick'],
       disabled: true,
       clicked: false,
+      bgColor: '#99004d',
     },
     {
       type: 'Completion',
@@ -106,6 +67,57 @@ export class TaggerComponent {
       category: ['Pass', 'Take On', 'Tackle', 'Long Kick'],
       disabled: true,
       clicked: false,
+      bgColor: '#99004d',
+    },
+
+    // OUTCOME
+    {
+      type: 'Outcome',
+      name: 'Goal',
+      category: ['Shot', 'Free Kick', 'Penalty'],
+      disabled: true,
+      clicked: false,
+      bgColor: '#ff1a8c',
+    },
+    {
+      type: 'Outcome',
+      name: 'Off Target',
+      category: ['Shot', 'Penalty'],
+      disabled: true,
+      clicked: false,
+      bgColor: '#ff1a8c',
+    },
+    {
+      type: 'Outcome',
+      name: 'Blocked',
+      category: ['Shot', 'Penalty'],
+      disabled: true,
+      clicked: false,
+      bgColor: '#ff1a8c',
+    },
+    {
+      type: 'Outcome',
+      name: 'Saved',
+      category: ['Shot', 'Penalty'],
+      disabled: true,
+      clicked: false,
+      bgColor: '#ff1a8c',
+    },
+    {
+      type: 'Outcome',
+      name: 'Yellow Card',
+      category: ['Foul'],
+      disabled: true,
+      clicked: false,
+      bgColor: '#ff1a8c',
+    },
+    {
+      type: 'Outcome',
+      name: 'Red Card',
+      category: ['Foul'],
+      disabled: true,
+      clicked: false,
+      bgColor: '#ff1a8c',
     },
 
     // KEY PASS (boolean)
@@ -115,6 +127,7 @@ export class TaggerComponent {
       category: ['Pass', 'Long Kick', 'Cross', 'Free Kick', 'Corner'],
       disabled: true,
       clicked: false,
+      bgColor: '#00b359',
     },
 
     // ASSIST (boolean)
@@ -124,6 +137,7 @@ export class TaggerComponent {
       category: ['Pass', 'Long Kick', 'Cross', 'Free Kick', 'Corner'],
       disabled: true,
       clicked: false,
+      bgColor: '#00b359',
     },
 
     // THROUGH PASS (boolean)
@@ -133,6 +147,7 @@ export class TaggerComponent {
       category: ['Pass'],
       disabled: true,
       clicked: false,
+      bgColor: '#00b359',
     },
 
     // CLEARANCE
@@ -142,6 +157,7 @@ export class TaggerComponent {
       category: ['Pass', 'Interception'],
       disabled: true,
       clicked: false,
+      bgColor: '#00b359',
     },
 
     // HAND FOUL
@@ -151,57 +167,65 @@ export class TaggerComponent {
       category: ['Foul'],
       disabled: true,
       clicked: false,
+      bgColor: '#00bfff',
     },
 
     //other
     {
-      type: 'Assist',
-      name: 'Assist',
+      type: 'none',
+      name: 'none',
       category: ['pass'],
       disabled: true,
       clicked: false,
+      bgColor: '#a3c2c2',
     },
     {
-      type: 'Assist',
-      name: 'Assist',
+      type: 'none',
+      name: 'none',
       category: ['pass'],
       disabled: true,
       clicked: false,
+      bgColor: '#a3c2c2',
     },
     {
-      type: 'Assist',
-      name: 'Assist',
+      type: 'none',
+      name: 'none',
       category: ['pass'],
       disabled: true,
       clicked: false,
+      bgColor: '#a3c2c2',
     },
     {
-      type: 'Assist',
-      name: 'Assist',
+      type: 'none',
+      name: 'none',
       category: ['pass'],
       disabled: true,
       clicked: false,
+      bgColor: '#a3c2c2',
     },
     {
-      type: 'Assist',
-      name: 'Assist',
+      type: 'none',
+      name: 'none',
       category: ['pass'],
       disabled: true,
       clicked: false,
+      bgColor: '#a3c2c2',
     },
     {
-      type: 'Assist',
-      name: 'Assist',
+      type: 'none',
+      name: 'none',
       category: ['pass'],
       disabled: true,
       clicked: false,
+      bgColor: '#a3c2c2',
     },
     {
-      type: 'Assist',
-      name: 'Assist',
+      type: 'none',
+      name: 'none',
       category: ['pass'],
       disabled: true,
       clicked: false,
+      bgColor: '#a3c2c2',
     },
   ];
 
@@ -613,7 +637,9 @@ export class TaggerComponent {
         case 'throughpass':
         case 'clearance':
         case 'handfoul':
-          (this.subtagsSelected as any)[subtagType] = true;
+          (this.subtagsSelected as any)[subtagType] = !(
+            this.subtagsSelected as any
+          )[subtagType];
           break;
         case 'completion':
           this.subtagsSelected.outcome = subtag.name;
@@ -630,11 +656,6 @@ export class TaggerComponent {
       area.clicked = !area.clicked;
       this.goalAreaSelected = area.name;
     }
-  }
-
-  ngAfterViewInit() {
-    // Access the native element after the view has been initialized
-    console.log('ngAfter view Init =>  ', this.pitchContainer.nativeElement);
   }
 
   handleMapMouseDown(event: MouseEvent) {

@@ -370,6 +370,8 @@ export class TaggerComponent {
   currentPlayerName = '';
   currentEvent = '';
 
+  latestDeleted = false;
+
   @ViewChild('pitchContainer') pitchContainer: ElementRef;
   @ViewChild('localVideoPlayer') localVideoPlayer: ElementRef;
   @ViewChild('youtubeVideoPlayer') youtubeVideoPlayer: HTMLIFrameElement;
@@ -503,12 +505,14 @@ export class TaggerComponent {
         this.enableGoalAreas();
       }
     }
-    if (
-      this.eventService.getAllEvents().length !== 0 &&
-      event.key === 'Backspace'
-    ) {
-      this.eventService.removeLastEntry();
-    }
+  }
+
+  @HostListener('document:keydown.backspace', ['$event'])
+  handleDeleteLast(event: KeyboardEvent) {
+    if (this.eventService.getAllEvents().length && !this.latestDeleted) {
+      this.eventService.removeLatestEvent();
+      this.latestDeleted = true;
+    } else alert('Latest tag already deleted');
   }
 
   // @HostListener('document:keydown.space', ['$event'])
@@ -714,6 +718,7 @@ export class TaggerComponent {
       area.disabled = true;
       area.clicked = false;
     }
+    this.latestDeleted = false;
   }
 
   ngOnDestroy() {

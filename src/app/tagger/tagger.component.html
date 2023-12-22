@@ -57,9 +57,12 @@
             'div-disabled': !editModeON
           }"
           [style.transform]="switchSide ? 'rotate(180deg)' : ''"
+          data-bs-toggle="tooltip"
+          [title]="player.jersey + ' ' + player.name"
         >
-          {{ player.jersey }}
-          {{ player.name }}
+          <span class="player-details"
+            >{{ player.jersey }} {{ player.name }}</span
+          >
         </div>
       </ng-container>
     </div>

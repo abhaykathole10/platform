@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { EventService } from '../services/event.service';
 import { PlayersService } from '../services/players.service';
+import { ExportService } from '../services/export.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -39,7 +40,8 @@ export class ToolbarComponent {
 
   constructor(
     private eventService: EventService,
-    private playersService: PlayersService
+    private playersService: PlayersService,
+    private exportService: ExportService
   ) {}
 
   @ViewChild('fileInput') fileInput: ElementRef;
@@ -109,8 +111,17 @@ export class ToolbarComponent {
     }
   }
 
-  reset() {
-    this.eventService.resetAll();
-    this.playersService.resetAllPlayers();
+  exportToCSV() {
+    const eventsData = this.eventService.getAllEvents();
+    if (eventsData.length) {
+      this.exportService.exportToCsv(eventsData, 'bm-events-data.csv');
+    } else alert('Why export blank csv? Please tag data first');
+  }
+
+  handleReset() {
+    if (confirm('Are you sure you want to reset all??')) {
+      this.eventService.deleteAllEvents();
+      this.playersService.resetAllPlayers();
+    }
   }
 }

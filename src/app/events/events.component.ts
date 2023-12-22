@@ -28,10 +28,6 @@ export class EventsComponent implements OnInit {
       });
   }
 
-  onDeleteLast() {
-    this.eventService.removeLastEntry();
-  }
-
   deleteEvent(event: DataItem) {
     this.eventService.deleteEventById(event.id);
   }

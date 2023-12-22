@@ -11,6 +11,8 @@
   overflow: hidden;
   width: 70vw;
   height: 75vh;
+  max-width: 75vw;
+  max-height: 80vh;
   border: 1px solid #000;
 }
 
@@ -44,21 +46,25 @@
 /* PLAYERS */
 .player {
   position: absolute;
-  width: 15%; /* Use a percentage of the pitch width */
-  height: 10%; /* Use a percentage of the pitch height */
-  background-color: rgb(171, 247, 95); /* You can style the players as needed */
-  font-weight: bold;
-  font-size: 1vw;
+  width: 15%;
+  height: 10%;
+  background-color: rgb(171, 247, 95);
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
   cursor: text;
   text-align: center;
-  text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
   border-radius: 5px;
   border: 1px solid black;
+}
+
+.player-details {
+  font-weight: bold;
+  font-size: 1vw;
+  text-overflow: ellipsis;
+  padding-left: 2px;
 }
 
 .player:hover {

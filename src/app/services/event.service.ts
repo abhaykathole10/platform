@@ -18,6 +18,9 @@ export class EventService {
     if (!this.eventDataArray) {
       this.eventDataArray = [];
     }
+    if (typeof this.eventDataArray === 'object') {
+      this.eventDataArray = Object.values(this.eventDataArray);
+    }
     this.eventDataArray.push(data);
     localStorage.setItem('event-data', JSON.stringify(this.eventDataArray));
     this.eventDataSubject.next(this.eventDataArray);
@@ -27,7 +30,7 @@ export class EventService {
     const storedEventData = localStorage.getItem('event-data');
     this.eventDataArray = storedEventData
       ? JSON.parse(storedEventData)
-      : this.resetAll();
+      : this.deleteAllEvents();
     return this.eventDataArray;
   }
 
@@ -35,7 +38,7 @@ export class EventService {
     return this.eventDataSubject.asObservable();
   }
 
-  removeLastEntry() {
+  removeLatestEvent() {
     this.eventDataArray.pop();
     this.notifySubscribers();
   }
@@ -50,7 +53,7 @@ export class EventService {
     }
   }
 
-  resetAll() {
+  deleteAllEvents() {
     this.eventDataArray = [];
     this.notifySubscribers();
   }

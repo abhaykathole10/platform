@@ -11,6 +11,7 @@
 
 <!-- PARENT CONTAINER -->
 <div class="parent-container">
+  <!-- RESIZABLE CONTAINER -->
   <div class="resizable-div">
     <!-- LOCAL VIDEO UPLOAD -->
     <video
@@ -24,6 +25,7 @@
 
     <!-- YOUTUBE VIDEO UPLOAD -->
     <iframe
+      #youtubeVideoPlayer
       *ngIf="youtubeUpload"
       class="video-player"
       [src]="url | safe"
@@ -81,7 +83,16 @@
     <!-- GOAL SKELETON -->
     <div class="goal-div pt-1">
       <div class="goal-grid">
-        <div *ngFor="let part of allGoalParts">{{ part }}</div>
+        <div
+          *ngFor="let area of allGoalAreas"
+          (click)="handleGoalArea(area)"
+          [ngClass]="{
+            disableGoalAreas: area.disabled,
+            goalAreaSelected: area.clicked
+          }"
+        >
+          {{ area.name }}
+        </div>
       </div>
     </div>
   </div>

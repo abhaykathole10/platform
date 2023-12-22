@@ -8,13 +8,20 @@
       <tr>
         <th>Team</th>
         <th>Jersey</th>
-        <th>Name</th>
+        <th>Player</th>
         <th>Event</th>
-        <th>Sub-Tag</th>
-        <th>x1</th>
-        <th>y1</th>
-        <th>x2</th>
-        <th>y2</th>
+        <th>X</th>
+        <th>Y</th>
+        <th>endX</th>
+        <th>endY</th>
+        <th>Foot</th>
+        <th>Outcome</th>
+        <th>Key Pass</th>
+        <th>Assist</th>
+        <th>Through Pass</th>
+        <th>Clearance</th>
+        <th>Hand Foul</th>
+        <th>Goal Area</th>
         <th>delete</th>
       </tr>
     </thead>
@@ -25,11 +32,18 @@
           <td>{{ dataItems[i].jersey }}</td>
           <td>{{ dataItems[i].name }}</td>
           <td>{{ dataItems[i].event }}</td>
-          <td>{{ dataItems[i].subtags }}</td>
           <td>{{ dataItems[i].start.x }}</td>
           <td>{{ dataItems[i].start.y }}</td>
           <td>{{ dataItems[i].end.x }}</td>
           <td>{{ dataItems[i].end.y }}</td>
+          <td>{{ dataItems[i].subEvents.foot }}</td>
+          <td>{{ dataItems[i].subEvents.outcome }}</td>
+          <td>{{ dataItems[i].subEvents.keypass }}</td>
+          <td>{{ dataItems[i].subEvents.assist }}</td>
+          <td>{{ dataItems[i].subEvents.throughpass }}</td>
+          <td>{{ dataItems[i].subEvents.clearance }}</td>
+          <td>{{ dataItems[i].subEvents.handfoul }}</td>
+          <td>{{ dataItems[i].goalArea }}</td>
           <td>
             <button
               type="button"
@@ -42,7 +56,7 @@
       </ng-container>
       <ng-template #noData>
         <tr>
-          <td colspan="10">No data available</td>
+          <td colspan="17">No data available</td>
         </tr>
       </ng-template>
     </tbody>

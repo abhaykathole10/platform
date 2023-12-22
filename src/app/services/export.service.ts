@@ -28,23 +28,34 @@ export class ExportService {
 
   private convertToCsv(data: DataItem[]): string {
     // Define the headers for your CSV
-    const csvHeader = 'Team,Jersey,Name,Event,Sub-Tag,x1,y1,x2,y2';
+    const csvHeader =
+      'Team,Jersey,Player,Event,X,Y,endX,endY,Foot,Outcome,Key Pass,Assist,Through Pass,Clearance,Hand Foul,Goal Area';
 
     // Map each item in the data array to extract the desired properties
     const csvRows = data.map((item) => {
-      const { team, jersey, name, event, subtags, start, end } = item;
+      const { team, jersey, name, event, start, end, subEvents, goalArea } =
+        item;
 
       // Join the subtags array into a single comma-separated string and wrap it in double quotes
-      const formattedSubtags = `"${subtags.join(', ')}"`;
+      // const formattedSubtags = `"${subEvents.join(', ')}"`;
 
       // Extract x and y from start and end coordinates
-      const x1 = start.x || '';
-      const y1 = start.y || '';
-      const x2 = end.x || '';
-      const y2 = end.y || '';
+      const X = start.x || '';
+      const Y = start.y || '';
+      const endX = end.x || '';
+      const endY = end.y || '';
+
+      // Extract foot, outcome, keypass, assist, throughpass from subEvents
+      const foot = subEvents.foot || '';
+      const outcome = subEvents.outcome || '';
+      const keypass = subEvents.keypass || '';
+      const assist = subEvents.assist || '';
+      const throughpass = subEvents.throughpass || '';
+      const clearance = subEvents.clearance || '';
+      const handfoul = subEvents.handfoul || '';
 
       // Join the extracted properties as a CSV row
-      return `${team},${jersey},${name},${event},${formattedSubtags},${x1},${y1},${x2},${y2}`;
+      return `${team},${jersey},${name},${event},${X},${Y},${endX},${endY},${foot},${outcome},${keypass},${assist},${throughpass},${clearance},${handfoul},${goalArea}`;
     });
 
     // Join the header and rows with newline characters to form the CSV content

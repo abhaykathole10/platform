@@ -56,6 +56,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  border-radius: 5px;
+  border: 1px solid black;
 }
 
 .player:hover {
@@ -137,7 +139,7 @@
 }
 
 .disableSubtags {
-  opacity: 0.2;
+  opacity: 0.3;
   pointer-events: none;
 }
 
@@ -149,7 +151,7 @@
 .goal-div {
   width: 100%;
   height: auto;
-  background-color: yellow;
+  background-color: white;
 }
 
 .goal-grid {
@@ -173,6 +175,15 @@
 
 .goal-grid div:hover {
   background-color: #0056b3;
+}
+
+.disableGoalAreas {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.goalAreaSelected {
+  background-color: blueviolet !important;
 }
 
 /* VIDEO PLAYER */

@@ -3,19 +3,21 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
 import { EventService } from '../services/event.service';
 import { PlayersService } from '../services/players.service';
 import { ExportService } from '../services/export.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.css'],
 })
-export class ToolbarComponent {
+export class ToolbarComponent implements OnInit {
   @Input() areAllPlayersFilled = false;
   @Input() editModeON = true;
   @Input() videoUploaded: boolean = false;
@@ -38,6 +40,13 @@ export class ToolbarComponent {
   currentTeam: string = '';
   teamReadOnly: boolean = false;
 
+  playerJersey = '';
+  mainEvent = '';
+
+  private playerJerseySubscription: Subscription;
+  private currentEventSubscription: Subscription;
+  private eventDataSubscription: Subscription;
+
   constructor(
     private eventService: EventService,
     private playersService: PlayersService,
@@ -45,6 +54,26 @@ export class ToolbarComponent {
   ) {}
 
   @ViewChild('fileInput') fileInput: ElementRef;
+
+  ngOnInit() {
+    this.playerJerseySubscription = this.eventService
+      .getCurrentPlayerObservable()
+      .subscribe((playerJersey) => {
+        this.playerJersey = playerJersey;
+      });
+    this.currentEventSubscription = this.eventService
+      .getCurrentMainTagObservable()
+      .subscribe((mainTag) => {
+        this.mainEvent = mainTag;
+      });
+    this.eventDataSubscription = this.eventService
+      .getEventDataObservable()
+      .subscribe((data) => {
+        if (data) {
+          this.playerJersey = this.mainEvent = '';
+        }
+      });
+  }
 
   onTaggingButtonClicked(event: any) {
     this.editModeON = !this.editModeON;
@@ -125,5 +154,12 @@ export class ToolbarComponent {
       this.eventService.deleteAllEvents();
       this.playersService.resetAllPlayers();
     }
+  }
+
+  ngOnDestroy() {
+    // Unsubscribe to avoid memory leaks
+    this.playerJerseySubscription.unsubscribe();
+    this.currentEventSubscription.unsubscribe();
+    this.eventDataSubscription.unsubscribe();
   }
 }

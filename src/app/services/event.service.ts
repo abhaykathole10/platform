@@ -9,6 +9,9 @@ export class EventService {
   private eventDataArray: DataItem[] = [];
   private eventDataSubject = new BehaviorSubject<DataItem[]>([]);
 
+  private currentPlayerSubject = new BehaviorSubject<string>('');
+  private currentMainTagSubject = new BehaviorSubject<string>('');
+
   constructor() {
     this.eventDataArray = this.getAllEvents();
     this.eventDataSubject.next(this.eventDataArray);
@@ -36,6 +39,22 @@ export class EventService {
 
   getEventDataObservable() {
     return this.eventDataSubject.asObservable();
+  }
+
+  setCurrentPlayer(player: string) {
+    this.currentPlayerSubject.next(player);
+  }
+
+  getCurrentPlayerObservable() {
+    return this.currentPlayerSubject.asObservable();
+  }
+
+  setCurrentMainTag(mainTag: string) {
+    this.currentMainTagSubject.next(mainTag);
+  }
+
+  getCurrentMainTagObservable() {
+    return this.currentMainTagSubject.asObservable();
   }
 
   removeLatestEvent() {

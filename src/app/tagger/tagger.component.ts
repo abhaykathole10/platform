@@ -484,6 +484,7 @@ export class TaggerComponent {
           this.currentEvent = 'Tackle';
           break;
         case 'Insert' + 0: // Insert is GOAL KICK
+        case 'Help' + 0:
           this.currentEvent = 'Goal Kick';
           break;
         case '5' + 3: // NUM 5 is LONG KICK
@@ -514,6 +515,7 @@ export class TaggerComponent {
           this.currentEvent = 'Recovery';
           break;
         case 'NumLock' + 0: // Numlock is CORNER
+        case 'Clear' + 0:
           this.currentEvent = 'Corner';
           break;
         case 'F8' + 0: // F11 is OFFSIDE

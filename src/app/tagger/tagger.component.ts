@@ -327,7 +327,7 @@ export class TaggerComponent {
       clicked: false,
     },
     {
-      name: 'Bootom left',
+      name: 'Bottom left',
       category: 'goal',
       disabled: true,
       clicked: false,
@@ -396,6 +396,8 @@ export class TaggerComponent {
 
   latestDeleted = false;
 
+  isScrolling: boolean = false;
+
   @ViewChild('pitchContainer') pitchContainer: ElementRef;
   @ViewChild('localVideoPlayer') localVideoPlayer: ElementRef;
   @ViewChild('youtubeVideoPlayer') youtubeVideoPlayer: HTMLIFrameElement;
@@ -463,7 +465,7 @@ export class TaggerComponent {
   }
 
   @HostListener('document:keydown', ['$event'])
-  handleKeyPress(event: KeyboardEvent) {
+  handleMainEvents(event: KeyboardEvent) {
     if (this.currentPlayerJersey && this.currentPlayerName) {
       switch (event.key + event.location) {
         case '0' + 3: // NUM 0 -> PASS
@@ -524,15 +526,17 @@ export class TaggerComponent {
           this.currentEvent = 'Ball Out';
           break;
       }
+      this.eventService.setCurrentMainTag(this.currentEvent);
       this.enableSubtags(this.currentEvent);
-      if (this.currentEvent === 'Shot') {
+      if (['Shot', 'Save', 'Penalty'].includes(this.currentEvent)) {
         this.enableGoalAreas();
       }
     }
   }
 
+  // REMOVE LATEST EVENT WITH BACKSPACE
   @HostListener('document:keydown.backspace', ['$event'])
-  handleDeleteLast(event: KeyboardEvent) {
+  removeLatestEvent(event: KeyboardEvent) {
     if (!this.editModeON) {
       if (this.eventService.getAllEvents().length && !this.latestDeleted) {
         this.eventService.removeLatestEvent();
@@ -541,32 +545,60 @@ export class TaggerComponent {
     }
   }
 
-  // @HostListener('document:keydown.space', ['$event'])
-  // handleSpacebarEvent(event: KeyboardEvent) {
-  //   if (this.youtubeVideoPlayer) {
-  //     event.preventDefault();
+  // PLAY OR PAUSE VIDEO ON RIGHT CONTROL
+  @HostListener('document:keydown.control', ['$event'])
+  playPauseVideo(event: KeyboardEvent) {
+    if (event.location === 2 && this.localVideoPlayer && !this.editModeON) {
+      const videoElement = this.localVideoPlayer.nativeElement;
+      videoElement.paused ? videoElement.play() : videoElement.pause();
+    }
+  }
 
-  //     if (this.youtubeVideoPlayer instanceof HTMLIFrameElement) {
-  //       this.toggleVideoPlayPause(this.youtubeVideoPlayer);
-  //     }
-  //   }
-  // }
+  // INCREASE PLAYBACK SPEED ON SHIFT
+  @HostListener('document:keydown.shift', ['$event'])
+  @HostListener('document:keyup.shift', ['$event'])
+  handleShiftKey(event: KeyboardEvent) {
+    if (
+      event.location === 2 &&
+      this.localVideoPlayer?.nativeElement &&
+      !this.editModeON
+    ) {
+      this.localVideoPlayer.nativeElement.playbackRate =
+        event.type === 'keydown' ? 2 : 1;
+    }
+  }
 
-  // private toggleVideoPlayPause(video: HTMLIFrameElement): void {
-  //   // if (video.nativeElement.paused) {
-  //   //   video.nativeElement.play();
-  //   // } else {
-  //   //   video.nativeElement.pause();
-  //   // }
+  // FORWARD OR BACKWARD ON MOUSE SCROLL
+  @HostListener('wheel', ['$event'])
+  onWheel(event: WheelEvent): void {
+    if (this.localVideoPlayer && !this.editModeON) {
+      const video: HTMLVideoElement = this.localVideoPlayer.nativeElement;
+      const direction: number = Math.sign(event.deltaY);
 
-  //   const player: any = (iframe.contentWindow || iframe.contentDocument) as any;
-  //   if (player && player.postMessage) {
-  //     player.postMessage(
-  //       '{"event":"command","func":"togglePlayPause","args":""}',
-  //       '*'
-  //     );
-  //   }
-  // }
+      if (!this.isScrolling) {
+        this.isScrolling = true;
+        this.scrollVideo(video, direction);
+      } else {
+        if (event.deltaY === 0) {
+          this.isScrolling = false;
+        } else {
+          this.scrollVideo(video, direction);
+        }
+      }
+      event.preventDefault();
+    }
+  }
+
+  private scrollVideo(video: HTMLVideoElement, direction: number): void {
+    const step = 0.01;
+    video.currentTime += direction * step;
+
+    requestAnimationFrame(() => {
+      if (this.isScrolling) {
+        this.scrollVideo(video, direction);
+      }
+    });
+  }
 
   enableSubtags(mainTag: string) {
     for (let subtag of this.allSubTags) {
@@ -614,6 +646,7 @@ export class TaggerComponent {
         if (player.id === selectedPlayer.id) {
           this.currentPlayerJersey = player.jersey;
           this.currentPlayerName = player.name;
+          this.eventService.setCurrentPlayer(this.currentPlayerJersey);
         }
       }
       this.showPlayers = false;

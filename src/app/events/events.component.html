@@ -24,7 +24,7 @@
     </thead>
     <tbody>
       <ng-container *ngIf="dataItems?.length; else noData">
-        <tr *ngFor="let item of dataItems.reverse() || []; let i = index">
+        <tr *ngFor="let item of dataItems || []; let i = index">
           <td>{{ dataItems[i].team }}</td>
           <td>{{ dataItems[i].time }}</td>
           <td>{{ dataItems[i].jersey }}</td>

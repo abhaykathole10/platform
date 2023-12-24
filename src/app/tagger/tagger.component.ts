@@ -673,10 +673,11 @@ export class TaggerComponent {
   currentTime: string;
 
   setEventTimeStamp() {
-    const video = this.localVideoPlayer.nativeElement;
-    const currentTimeInSeconds: number = video.currentTime;
-
-    this.currentTime = this.formatTime(currentTimeInSeconds);
+    if (this.localVideoPlayer) {
+      const video = this.localVideoPlayer.nativeElement;
+      const currentTimeInSeconds: number = video.currentTime;
+      this.currentTime = this.formatTime(currentTimeInSeconds);
+    }
   }
 
   formatTime(seconds: number): string {

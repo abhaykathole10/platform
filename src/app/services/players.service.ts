@@ -7,7 +7,7 @@ import { Player } from '../models/event-data.model';
 })
 export class PlayersService {
   private defaultPlayers: Player[] = [
-    { id: 'p0', jersey: 'FC', name: 'BMFC', class: 'p0', selected: false },
+    { id: 'p0', jersey: 'fc', name: 'baller', class: 'p0', selected: false },
     { id: 'p1', jersey: '25', name: 'Buffon', class: 'p1', selected: false },
     { id: 'p2', jersey: '12', name: 'Camavinga', class: 'p2', selected: false },
     { id: 'p3', jersey: '5', name: 'Maguire', class: 'p3', selected: false },

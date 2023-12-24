@@ -7,6 +7,7 @@ export interface Coordinate {
 export interface DataItem {
   id: string;
   team: string;
+  time: string;
   jersey: string;
   name: string;
   event: string;

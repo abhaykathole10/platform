@@ -10,7 +10,7 @@
   border: 1px solid red;
   height: auto;
   max-height: 10rem;
-  max-width: 70rem;
+  max-width: 80rem;
   padding: 0;
   resize: both;
   overflow: auto;
@@ -32,12 +32,17 @@ table {
 td,
 th {
   border: 1px solid #dddddd;
+  font-size: small;
   text-align: center;
-  padding: 5px;
+  padding: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
 }
 
 tr:nth-child(even) {
-  background-color: #dddddd;
+  background-color: #f7e9f6;
 }
 
 .delBtn {

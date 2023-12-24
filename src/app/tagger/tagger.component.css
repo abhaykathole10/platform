@@ -55,15 +55,20 @@
 }
 
 .player-details {
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-weight: bold;
   font-size: 1vw;
-  text-overflow: ellipsis;
   padding-left: 2px;
-  overflow: hidden;
 }
 
 .player:hover {
   background-color: rgb(166, 255, 227);
+}
+
+.p0 {
+  top: 2%;
+  left: 2%;
 }
 
 .p1 {
@@ -196,6 +201,10 @@
 .div-disabled {
   background-color: #74cffa;
   cursor: pointer;
+}
+
+.div-readonly {
+  pointer-events: none;
 }
 
 .hide-players {

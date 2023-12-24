@@ -3,7 +3,7 @@
   #toolbar
   [areAllPlayersFilled]="areAllPlayersFilled"
   [editModeON]="editModeON"
-  [videoUploaded]="videoUploaded"
+  [videoUploaded]="localVideoPlayer ? true : false"
   (taggingButtonClicked)="taggingButtonClicked($event)"
   (onVideoUpload)="onVideoUpload($event)"
   (switchSideButtonClicked)="onSwitchSide()"
@@ -54,7 +54,8 @@
           (click)="handlePlayerClick(player)"
           [ngClass]="{
             player: true,
-            'div-disabled': !editModeON
+            'div-disabled': !editModeON,
+            'div-readonly': editModeON && player.id === 'p0'
           }"
           [style.transform]="switchSide ? 'rotate(180deg)' : ''"
           data-bs-toggle="tooltip"

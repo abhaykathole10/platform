@@ -29,7 +29,7 @@
             type="checkbox"
             role="switch"
             id="mode-switch"
-            [disabled]="!areAllPlayersFilled || !currentTeam"
+            [disabled]="!areAllPlayersFilled || !currentTeam || !videoUploaded"
             [(ngModel)]="switchValue"
             (click)="onTaggingButtonClicked(switchButton)"
           />

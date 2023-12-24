@@ -444,6 +444,9 @@ export class TaggerComponent {
       this.editModeON = event.isEditable;
       if (event.buttonLabel === 'Start Tagging') {
         this.currentTeam = event.teamName;
+        this.allPlayers.filter((player) =>
+          player.id === 'p0' ? (player.name = this.currentTeam) : player.name
+        );
         //Event fetching logic
       } else if (event.buttonLabel === 'End Tagging') {
         alert('Thanks! players tagged successfully');
@@ -466,6 +469,17 @@ export class TaggerComponent {
 
   @HostListener('document:keydown', ['$event'])
   handleMainEvents(event: KeyboardEvent) {
+    if (this.localVideoPlayer && !this.editModeON) {
+      const video = this.localVideoPlayer.nativeElement;
+      switch (event.key) {
+        case 'n':
+          video.currentTime -= 1;
+          break;
+        case 'm':
+          video.currentTime += 1;
+          break;
+      }
+    }
     if (this.currentPlayerJersey && this.currentPlayerName) {
       switch (event.key + event.location) {
         case '0' + 3: // NUM 0 -> PASS
@@ -571,36 +585,36 @@ export class TaggerComponent {
   }
 
   // FORWARD OR BACKWARD ON MOUSE SCROLL
-  @HostListener('wheel', ['$event'])
-  onWheel(event: WheelEvent): void {
-    if (this.localVideoPlayer && !this.editModeON) {
-      const video: HTMLVideoElement = this.localVideoPlayer.nativeElement;
-      const direction: number = Math.sign(event.deltaY);
+  // @HostListener('wheel', ['$event'])
+  // onWheel(event: WheelEvent): void {
+  //   if (this.localVideoPlayer && !this.editModeON) {
+  //     const video: HTMLVideoElement = this.localVideoPlayer.nativeElement;
+  //     const direction: number = Math.sign(event.deltaY);
 
-      if (!this.isScrolling) {
-        this.isScrolling = true;
-        this.scrollVideo(video, direction);
-      } else {
-        if (event.deltaY === 0) {
-          this.isScrolling = false;
-        } else {
-          this.scrollVideo(video, direction);
-        }
-      }
-      event.preventDefault();
-    }
-  }
+  //     if (!this.isScrolling) {
+  //       this.isScrolling = true;
+  //       this.scrollVideo(video, direction);
+  //     } else {
+  //       if (event.deltaY === 0) {
+  //         this.isScrolling = false;
+  //       } else {
+  //         this.scrollVideo(video, direction);
+  //       }
+  //     }
+  //     event.preventDefault();
+  //   }
+  // }
 
-  private scrollVideo(video: HTMLVideoElement, direction: number): void {
-    const step = 0.01;
-    video.currentTime += direction * step;
+  // private scrollVideo(video: HTMLVideoElement, direction: number): void {
+  //   const step = 0.01;
+  //   video.currentTime += direction * step;
 
-    requestAnimationFrame(() => {
-      if (this.isScrolling) {
-        this.scrollVideo(video, direction);
-      }
-    });
-  }
+  //   requestAnimationFrame(() => {
+  //     if (this.isScrolling) {
+  //       this.scrollVideo(video, direction);
+  //     }
+  //   });
+  // }
 
   enableSubtags(mainTag: string) {
     for (let subtag of this.allSubTags) {
@@ -649,10 +663,32 @@ export class TaggerComponent {
           this.currentPlayerJersey = player.jersey;
           this.currentPlayerName = player.name;
           this.eventService.setCurrentPlayer(this.currentPlayerJersey);
+          this.setEventTimeStamp();
         }
       }
       this.showPlayers = false;
     }
+  }
+
+  currentTime: string;
+
+  setEventTimeStamp() {
+    const video = this.localVideoPlayer.nativeElement;
+    const currentTimeInSeconds: number = video.currentTime;
+
+    this.currentTime = this.formatTime(currentTimeInSeconds);
+  }
+
+  formatTime(seconds: number): string {
+    const minutes: number = Math.floor(seconds / 60);
+    const remainingSeconds: number = Math.floor(seconds % 60);
+
+    const formattedMinutes: string =
+      minutes < 10 ? `0${minutes}` : `${minutes}`;
+    const formattedSeconds: string =
+      remainingSeconds < 10 ? `0${remainingSeconds}` : `${remainingSeconds}`;
+
+    return `${formattedMinutes}:${formattedSeconds}`;
   }
 
   handleSubtagClick(subtag: Subtag) {
@@ -742,6 +778,7 @@ export class TaggerComponent {
     const eventData: DataItem = {
       id: new Date().getTime().toString(),
       team: this.currentTeam,
+      time: this.currentTime,
       jersey: this.currentPlayerJersey,
       name: this.currentPlayerName,
       event: this.currentEvent,
@@ -777,6 +814,7 @@ export class TaggerComponent {
       area.clicked = false;
     }
     this.latestDeleted = false;
+    this.currentTime = '';
   }
 
   ngOnDestroy() {

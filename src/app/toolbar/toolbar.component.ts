@@ -21,6 +21,7 @@ export class ToolbarComponent implements OnInit {
   @Input() areAllPlayersFilled = false;
   @Input() editModeON = true;
   @Input() videoUploaded: boolean = false;
+
   url: any;
   format: string;
   videoYtUrl: string;

@@ -10,6 +10,7 @@ import {
 import { EventService } from '../services/event.service';
 import { PlayersService } from '../services/players.service';
 import { Subscription } from 'rxjs';
+import { ALLGOALAREAS, ALLSUBTAGS } from '../shared/app.constants';
 
 @Component({
   selector: 'app-tagger',
@@ -17,341 +18,13 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./tagger.component.css'],
 })
 export class TaggerComponent {
-  allSubTags: Subtag[] = [
-    // FOOT
-    {
-      type: 'Foot',
-      name: 'Right',
-      category: ['Shot', 'Save', 'Cross'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#884dff',
-    },
-    {
-      type: 'Foot',
-      name: 'Left',
-      category: ['Shot', 'Save', 'Cross'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#884dff',
-    },
-    {
-      type: 'Foot',
-      name: 'Middle',
-      category: ['Shot', 'Save', 'Cross'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#884dff',
-    },
-    {
-      type: 'Foot',
-      name: 'Header',
-      category: ['Shot'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#884dff',
-    },
+  allPlayers: Player[] = [];
+  allSubTags: Subtag[] = ALLSUBTAGS;
+  allGoalAreas: GoalArea[] = ALLGOALAREAS;
 
-    // COMPLETION
-    {
-      type: 'Completion',
-      name: 'Complete',
-      category: ['Pass', 'Take On', 'Tackle', 'Long Kick'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#99004d',
-    },
-    {
-      type: 'Completion',
-      name: 'Incomplete',
-      category: ['Pass', 'Take On', 'Tackle', 'Long Kick'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#99004d',
-    },
+  private playerDataSubscription: Subscription;
 
-    // OUTCOME
-    {
-      type: 'Outcome',
-      name: 'Goal',
-      category: ['Shot', 'Free Kick', 'Penalty'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#ff1a8c',
-    },
-    {
-      type: 'Outcome',
-      name: 'Off Target',
-      category: ['Shot', 'Penalty'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#ff1a8c',
-    },
-    {
-      type: 'Outcome',
-      name: 'Blocked',
-      category: ['Shot', 'Penalty'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#ff1a8c',
-    },
-    {
-      type: 'Outcome',
-      name: 'Saved',
-      category: ['Shot', 'Penalty'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#ff1a8c',
-    },
-    {
-      type: 'Outcome',
-      name: 'Yellow Card',
-      category: ['Foul'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#ff1a8c',
-    },
-    {
-      type: 'Outcome',
-      name: 'Red Card',
-      category: ['Foul'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#ff1a8c',
-    },
-
-    // KEY PASS (boolean)
-    {
-      type: 'Key Pass',
-      name: 'Key Pass',
-      category: ['Pass', 'Long Kick', 'Cross', 'Free Kick', 'Corner'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#00b359',
-    },
-
-    // ASSIST (boolean)
-    {
-      type: 'Assist',
-      name: 'Assist',
-      category: ['Pass', 'Long Kick', 'Cross', 'Free Kick', 'Corner'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#00b359',
-    },
-
-    // THROUGH PASS (boolean)
-    {
-      type: 'Through Pass',
-      name: 'Through Pass',
-      category: ['Pass'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#00b359',
-    },
-
-    // CLEARANCE
-    {
-      type: 'Clearance',
-      name: 'Clearance',
-      category: ['Pass', 'Interception'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#00b359',
-    },
-
-    // HAND FOUL
-    {
-      type: 'Hand Foul',
-      name: 'Hand Ball',
-      category: ['Foul'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#00bfff',
-    },
-
-    //other
-    {
-      type: 'none',
-      name: 'none',
-      category: ['pass'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#a3c2c2',
-    },
-    {
-      type: 'none',
-      name: 'none',
-      category: ['pass'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#a3c2c2',
-    },
-    {
-      type: 'none',
-      name: 'none',
-      category: ['pass'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#a3c2c2',
-    },
-    {
-      type: 'none',
-      name: 'none',
-      category: ['pass'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#a3c2c2',
-    },
-    {
-      type: 'none',
-      name: 'none',
-      category: ['pass'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#a3c2c2',
-    },
-    {
-      type: 'none',
-      name: 'none',
-      category: ['pass'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#a3c2c2',
-    },
-    {
-      type: 'none',
-      name: 'none',
-      category: ['pass'],
-      disabled: true,
-      clicked: false,
-      bgColor: '#a3c2c2',
-    },
-  ];
-
-  allGoalAreas: GoalArea[] = [
-    {
-      name: 'post',
-      category: 'post',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'post',
-      category: 'post',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'post',
-      category: 'post',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'post',
-      category: 'post',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'post',
-      category: 'post',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'post',
-      category: 'post',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'Top left',
-      category: 'goal',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'Top',
-      category: 'goal',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'Top right',
-      category: 'goal',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'post',
-      category: 'post',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'post',
-      category: 'post',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'Left',
-      category: 'goal',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'Middle',
-      category: 'goal',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'Right',
-      category: 'goal',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'post',
-      category: 'post',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'post',
-      category: 'post',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'Bottom left',
-      category: 'goal',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'Bottom',
-      category: 'goal',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'Bottom right',
-      category: 'goal',
-      disabled: true,
-      clicked: false,
-    },
-    {
-      name: 'post',
-      category: 'post',
-      disabled: true,
-      clicked: false,
-    },
-  ];
-
+  // EVENTS THAT NEED START & END locations
   trackableEvents: string[] = [
     'Pass',
     'Goal Kick',
@@ -363,12 +36,7 @@ export class TaggerComponent {
     'Corner',
   ];
 
-  private playerDataSubscription: Subscription;
-  allPlayers: Player[] = [];
-
-  subtagsSelected: SubEvents;
-  goalAreaSelected: string = '';
-
+  // CONFIGURATION
   editModeON = true;
   showPlayers = true;
   areAllPlayersFilled = false;
@@ -393,6 +61,10 @@ export class TaggerComponent {
   currentPlayerJersey = '';
   currentPlayerName = '';
   currentEvent = '';
+
+  // SUBTAG & GOALAREA
+  subtagsSelected: SubEvents;
+  goalAreaSelected: string = '';
 
   latestDeleted = false;
 
@@ -480,7 +152,11 @@ export class TaggerComponent {
           break;
       }
     }
-    if (this.currentPlayerJersey && this.currentPlayerName) {
+    if (
+      this.currentPlayerJersey &&
+      this.currentPlayerName &&
+      !this.editModeON
+    ) {
       switch (event.key + event.location) {
         case '0' + 3: // NUM 0 -> PASS
           this.currentEvent = 'Pass';
@@ -493,9 +169,11 @@ export class TaggerComponent {
           break;
         case 'ArrowRight' + 0: // < is TAKE ON
           this.currentEvent = 'Take On';
+          event.preventDefault();
           break;
         case 'ArrowLeft' + 0: // > is TACKLE
           this.currentEvent = 'Tackle';
+          event.preventDefault();
           break;
         case 'ArrowDown' + 0: // v is LOOSE BALL DUEL
           this.currentEvent = 'LBD';
@@ -504,6 +182,7 @@ export class TaggerComponent {
         case 'Insert' + 0: // Insert is GOAL KICK
         case 'Help' + 0:
           this.currentEvent = 'Goal Kick';
+          event.preventDefault();
           break;
         case '5' + 3: // NUM 5 is LONG KICK
           this.currentEvent = 'Long Kick';
@@ -525,6 +204,7 @@ export class TaggerComponent {
           break;
         case 'F12' + 0: // F12 is FOUL
           this.currentEvent = 'Foul';
+          event.preventDefault();
           break;
         case 'PageUp' + 0: // PageUp is CARRY
           this.currentEvent = 'Carry';
@@ -798,6 +478,8 @@ export class TaggerComponent {
 
   initializeAll() {
     this.showPlayers = true;
+    this.currentPlayerJersey = '';
+    this.currentPlayerName = '';
     this.currentEvent = '';
     this.subtagsSelected = {
       foot: '',

@@ -35,7 +35,6 @@
   height: 0;
   padding-top: 64.3%;
   position: relative;
-  border: 1px solid red;
 }
 
 /* PLAYERS */
@@ -204,6 +203,7 @@
 }
 
 .div-readonly {
+  background-color: yellow;
   pointer-events: none;
 }
 

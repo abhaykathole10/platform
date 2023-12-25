@@ -497,6 +497,10 @@ export class TaggerComponent {
         case 'ArrowLeft' + 0: // > is TACKLE
           this.currentEvent = 'Tackle';
           break;
+        case 'ArrowDown' + 0: // v is LOOSE BALL DUEL
+          this.currentEvent = 'LBD';
+          event.preventDefault();
+          break;
         case 'Insert' + 0: // Insert is GOAL KICK
         case 'Help' + 0:
           this.currentEvent = 'Goal Kick';

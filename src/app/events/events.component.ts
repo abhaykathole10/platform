@@ -23,8 +23,8 @@ export class EventsComponent implements OnInit {
     // this.dataItems = this.eventService.getAllEvents();
     this.eventDataSubscription = this.eventService
       .getEventDataObservable()
-      .subscribe((data) => {
-        this.dataItems = data.reverse();
+      .subscribe((eventArray) => {
+        this.dataItems = eventArray.slice().reverse();
       });
   }
 

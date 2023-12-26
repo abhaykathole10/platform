@@ -72,7 +72,7 @@ export const ALLSUBTAGS: Subtag[] = [
   {
     type: 'Outcome',
     name: 'Goal',
-    category: ['Shot', 'Free Kick', 'Penalty'],
+    category: ['Shot', 'Free Kick', 'Penalty', 'Save'],
     disabled: true,
     clicked: false,
     bgColor: '#ff1a8c',
@@ -96,7 +96,7 @@ export const ALLSUBTAGS: Subtag[] = [
   {
     type: 'Outcome',
     name: 'Saved',
-    category: ['Shot', 'Penalty'],
+    category: ['Shot', 'Penalty', 'Save'],
     disabled: true,
     clicked: false,
     bgColor: '#ff1a8c',

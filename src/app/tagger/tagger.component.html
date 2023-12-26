@@ -55,7 +55,7 @@
           [ngClass]="{
             player: true,
             'div-disabled': !editModeON,
-            'div-readonly': player.id === 'p0'
+            'div-readonly': editModeON && player.id === 'p0'
           }"
           [style.transform]="switchSide ? 'rotate(180deg)' : ''"
           data-bs-toggle="tooltip"

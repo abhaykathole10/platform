@@ -72,7 +72,9 @@ export class TaggerComponent {
 
   @ViewChild('pitchContainer') pitchContainer: ElementRef;
   @ViewChild('localVideoPlayer') localVideoPlayer: ElementRef;
-  @ViewChild('youtubeVideoPlayer') youtubeVideoPlayer: HTMLIFrameElement;
+  @ViewChild('youtubePlayerContainer') youtubePlayerContainer: ElementRef;
+
+  private playerYT: any;
 
   constructor(
     private eventService: EventService,
@@ -92,21 +94,50 @@ export class TaggerComponent {
     this.initializeAll();
   }
 
+  //  INITIALIZING YOUTUBE PLAYER
+  private initYoutubePlayer() {
+    if (this.youtubeUpload) {
+      if ((window as any).YT && (window as any).YT.Player) {
+        this.playerYT = new (window as any).YT.Player(
+          this.youtubePlayerContainer.nativeElement,
+          {
+            videoId: this.getVideoId(this.url),
+            events: {
+              onReady: () => {
+                console.log('Player is ready');
+              },
+              onStateChange: (event: any) => {
+                console.log('Player state changed:', event.data);
+              },
+            },
+          }
+        );
+      }
+    }
+  }
+
+  // EXTRRACTING VIDEO ID FROM YOUTUBE VIDEO URL
+  private getVideoId(url: string): string {
+    const match = url.match(/[?&]v=([^?&]+)/);
+    return match ? match[1] : '';
+  }
+
   onSwitchSide() {
     this.switchSide = !this.switchSide;
   }
 
   onVideoUpload(event: any) {
+    this.url = event.url;
+    this.videoUploaded = event.videoUploaded;
+    this.format = event.format;
     if (event.source === 'local') {
       this.localUpload = true;
       this.youtubeUpload = false;
     } else if (event.source === 'youtube') {
       this.localUpload = false;
       this.youtubeUpload = true;
+      this.initYoutubePlayer();
     }
-    this.url = event.url;
-    this.videoUploaded = event.videoUploaded;
-    this.format = event.format;
   }
 
   taggingButtonClicked(event: any) {
@@ -248,9 +279,30 @@ export class TaggerComponent {
   // PLAY OR PAUSE VIDEO ON RIGHT CONTROL
   @HostListener('document:keydown.control', ['$event'])
   playPauseVideo(event: KeyboardEvent) {
-    if (event.location === 2 && this.localVideoPlayer && !this.editModeON) {
-      const videoElement = this.localVideoPlayer.nativeElement;
-      videoElement.paused ? videoElement.play() : videoElement.pause();
+    if (event.location === 2 && !this.editModeON) {
+      this.togglePlayPause('both');
+    }
+  }
+
+  togglePlayPause(action: string) {
+    const videoElement = this.localVideoPlayer?.nativeElement;
+    const playerState = this.playerYT?.getPlayerState();
+
+    if (videoElement && this.localUpload) {
+      if (action === 'both') {
+        videoElement.paused ? videoElement.play() : videoElement.pause();
+      } else if (action === 'pause') {
+        videoElement.pause();
+      }
+    } else if (playerState !== undefined && this.youtubeUpload) {
+      if ((playerState === 1 && action === 'both') || action === 'pause') {
+        this.playerYT.pauseVideo();
+      } else if (
+        (playerState === 2 || playerState === 5 || playerState === -1) &&
+        action === 'both'
+      ) {
+        this.playerYT.playVideo();
+      }
     }
   }
 
@@ -258,47 +310,15 @@ export class TaggerComponent {
   @HostListener('document:keydown.shift', ['$event'])
   @HostListener('document:keyup.shift', ['$event'])
   handleShiftKey(event: KeyboardEvent) {
-    if (
-      event.location === 2 &&
-      this.localVideoPlayer?.nativeElement &&
-      !this.editModeON
-    ) {
-      this.localVideoPlayer.nativeElement.playbackRate =
-        event.type === 'keydown' ? 2 : 1;
+    if (event.location === 2 && !this.editModeON) {
+      const speed = event.type === 'keydown' ? 2 : 1;
+      if (this.localVideoPlayer && this.localUpload) {
+        this.localVideoPlayer.nativeElement.playbackRate = speed;
+      } else if (this.playerYT && this.youtubeUpload) {
+        this.playerYT.setPlaybackRate(speed);
+      }
     }
   }
-
-  // FORWARD OR BACKWARD ON MOUSE SCROLL
-  // @HostListener('wheel', ['$event'])
-  // onWheel(event: WheelEvent): void {
-  //   if (this.localVideoPlayer && !this.editModeON) {
-  //     const video: HTMLVideoElement = this.localVideoPlayer.nativeElement;
-  //     const direction: number = Math.sign(event.deltaY);
-
-  //     if (!this.isScrolling) {
-  //       this.isScrolling = true;
-  //       this.scrollVideo(video, direction);
-  //     } else {
-  //       if (event.deltaY === 0) {
-  //         this.isScrolling = false;
-  //       } else {
-  //         this.scrollVideo(video, direction);
-  //       }
-  //     }
-  //     event.preventDefault();
-  //   }
-  // }
-
-  // private scrollVideo(video: HTMLVideoElement, direction: number): void {
-  //   const step = 0.01;
-  //   video.currentTime += direction * step;
-
-  //   requestAnimationFrame(() => {
-  //     if (this.isScrolling) {
-  //       this.scrollVideo(video, direction);
-  //     }
-  //   });
-  // }
 
   enableSubtags(mainTag: string) {
     for (let subtag of this.allSubTags) {
@@ -342,6 +362,7 @@ export class TaggerComponent {
         }
       }
     } else {
+      this.togglePlayPause('pause');
       for (let player of this.allPlayers) {
         if (player.id === selectedPlayer.id) {
           this.currentPlayerJersey = player.jersey;
@@ -357,9 +378,14 @@ export class TaggerComponent {
   currentTime: string;
 
   setEventTimeStamp() {
-    if (this.localVideoPlayer) {
+    let currentTimeInSeconds: number | undefined;
+    if (this.localVideoPlayer && this.localUpload) {
       const video = this.localVideoPlayer.nativeElement;
-      const currentTimeInSeconds: number = video.currentTime;
+      currentTimeInSeconds = video.currentTime;
+    } else if (this.playerYT && this.youtubeUpload) {
+      currentTimeInSeconds = this.playerYT.getCurrentTime();
+    }
+    if (currentTimeInSeconds !== undefined) {
       this.currentTime = this.formatTime(currentTimeInSeconds);
     }
   }

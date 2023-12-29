@@ -24,18 +24,18 @@
     ></video>
 
     <!-- YOUTUBE VIDEO UPLOAD -->
-    <iframe
-      #youtubeVideoPlayer
-      *ngIf="youtubeUpload"
-      class="video-player"
-      [src]="url | safe"
-      height="100%"
-      frameborder="0"
-      allowfullscreen
-    ></iframe>
+    <div style="width: 100%; height: 100%" #youtubePlayerContainer>
+      <iframe
+        *ngIf="youtubeUpload"
+        class="youtube-player"
+        [src]="url | safe"
+        frameborder="0"
+        allowfullscreen
+      ></iframe>
+    </div>
   </div>
 
-  <!-- PITCH and SUBTAGS CONTAINER -->
+  <!-- PITCH & SUBTAGS CONTAINER -->
   <div class="fill-div">
     <!-- PITCH -->
     <div

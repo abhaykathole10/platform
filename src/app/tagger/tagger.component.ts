@@ -103,12 +103,8 @@ export class TaggerComponent {
           {
             videoId: this.getVideoId(this.url),
             events: {
-              onReady: () => {
-                console.log('Player is ready');
-              },
-              onStateChange: (event: any) => {
-                console.log('Player state changed:', event.data);
-              },
+              onReady: () => {},
+              onStateChange: (event: any) => {},
             },
           }
         );
@@ -172,96 +168,113 @@ export class TaggerComponent {
 
   @HostListener('document:keydown', ['$event'])
   handleMainEvents(event: KeyboardEvent) {
-    if (this.localVideoPlayer && !this.editModeON) {
-      const video = this.localVideoPlayer.nativeElement;
+    if (!this.editModeON) {
       switch (event.key) {
-        case 'n':
-          video.currentTime -= 1;
+        case 'AltGraph':
+          this.handleBackward();
           break;
-        case 'm':
-          video.currentTime += 1;
+
+        case 'ContextMenu':
+          window.addEventListener('contextmenu', (e) => e.preventDefault());
+          this.handleForward();
           break;
+      }
+      if (this.currentPlayerJersey && this.currentPlayerName) {
+        switch (event.key + event.location) {
+          case '0' + 3: // NUM 0 -> PASS
+            this.currentEvent = 'Pass';
+            break;
+          case '+' + 3: // NUM + is SHOT
+            this.currentEvent = 'Shot';
+            break;
+          case 'F9' + 0: // MUTE is SAVE
+            this.currentEvent = 'Save';
+            break;
+          case 'ArrowRight' + 0: // < is TAKE ON
+            this.currentEvent = 'Take On';
+            event.preventDefault();
+            break;
+          case 'ArrowLeft' + 0: // > is TACKLE
+            this.currentEvent = 'Tackle';
+            event.preventDefault();
+            break;
+          case 'ArrowDown' + 0: // v is LOOSE BALL DUEL
+            this.currentEvent = 'LBD';
+            event.preventDefault();
+            break;
+          case 'Insert' + 0: // Insert is GOAL KICK
+          case 'Help' + 0:
+            this.currentEvent = 'Goal Kick';
+            event.preventDefault();
+            break;
+          case '5' + 3: // NUM 5 is LONG KICK
+            this.currentEvent = 'Long Kick';
+            break;
+          case '6' + 3: // NUM 6 is CROSS
+            this.currentEvent = 'Cross';
+            break;
+          case '4' + 3: // NUM 4 is INTERCEPTION
+            this.currentEvent = 'Interception';
+            break;
+          case '/' + 3: // / is FREE KICK
+            this.currentEvent = 'Free Kick';
+            break;
+          case 'Enter' + 3: // enter is THROW IN
+            this.currentEvent = 'Throw In';
+            break;
+          case '.' + 3: // enter is PRESSURE
+            this.currentEvent = 'Pressure';
+            break;
+          case 'F12' + 0: // F12 is FOUL
+            this.currentEvent = 'Foul';
+            event.preventDefault();
+            break;
+          case 'PageUp' + 0: // PageUp is CARRY
+            this.currentEvent = 'Carry';
+            break;
+          case 'End' + 0: // End is RECOVERY
+            this.currentEvent = 'Recovery';
+            break;
+          case 'NumLock' + 0: // Numlock is CORNER
+          case 'Clear' + 0:
+            this.currentEvent = 'Corner';
+            break;
+          case 'F8' + 0: // F11 is OFFSIDE
+            this.currentEvent = 'Offside';
+            break;
+          case 'F10' + 0: // F10 is PENALTY
+            this.currentEvent = 'Penalty';
+            break;
+          case 'Delete' + 0: // Delete(normal) is BALL OUT
+            this.currentEvent = 'Ball Out';
+            break;
+        }
+        this.eventService.setCurrentMainTag(this.currentEvent);
+        this.enableSubtags(this.currentEvent);
+        if (['Shot', 'Save', 'Penalty'].includes(this.currentEvent)) {
+          this.enableGoalAreas();
+        }
       }
     }
-    if (
-      this.currentPlayerJersey &&
-      this.currentPlayerName &&
-      !this.editModeON
-    ) {
-      switch (event.key + event.location) {
-        case '0' + 3: // NUM 0 -> PASS
-          this.currentEvent = 'Pass';
-          break;
-        case '+' + 3: // NUM + is SHOT
-          this.currentEvent = 'Shot';
-          break;
-        case 'F9' + 0: // MUTE is SAVE
-          this.currentEvent = 'Save';
-          break;
-        case 'ArrowRight' + 0: // < is TAKE ON
-          this.currentEvent = 'Take On';
-          event.preventDefault();
-          break;
-        case 'ArrowLeft' + 0: // > is TACKLE
-          this.currentEvent = 'Tackle';
-          event.preventDefault();
-          break;
-        case 'ArrowDown' + 0: // v is LOOSE BALL DUEL
-          this.currentEvent = 'LBD';
-          event.preventDefault();
-          break;
-        case 'Insert' + 0: // Insert is GOAL KICK
-        case 'Help' + 0:
-          this.currentEvent = 'Goal Kick';
-          event.preventDefault();
-          break;
-        case '5' + 3: // NUM 5 is LONG KICK
-          this.currentEvent = 'Long Kick';
-          break;
-        case '6' + 3: // NUM 6 is CROSS
-          this.currentEvent = 'Cross';
-          break;
-        case '4' + 3: // NUM 4 is INTERCEPTION
-          this.currentEvent = 'Interception';
-          break;
-        case '/' + 3: // / is FREE KICK
-          this.currentEvent = 'Free Kick';
-          break;
-        case 'Enter' + 3: // enter is THROW IN
-          this.currentEvent = 'Throw In';
-          break;
-        case '.' + 3: // enter is PRESSURE
-          this.currentEvent = 'Pressure';
-          break;
-        case 'F12' + 0: // F12 is FOUL
-          this.currentEvent = 'Foul';
-          event.preventDefault();
-          break;
-        case 'PageUp' + 0: // PageUp is CARRY
-          this.currentEvent = 'Carry';
-          break;
-        case 'End' + 0: // End is RECOVERY
-          this.currentEvent = 'Recovery';
-          break;
-        case 'NumLock' + 0: // Numlock is CORNER
-        case 'Clear' + 0:
-          this.currentEvent = 'Corner';
-          break;
-        case 'F8' + 0: // F11 is OFFSIDE
-          this.currentEvent = 'Offside';
-          break;
-        case 'F10' + 0: // F10 is PENALTY
-          this.currentEvent = 'Penalty';
-          break;
-        case 'Delete' + 0: // Delete(normal) is BALL OUT
-          this.currentEvent = 'Ball Out';
-          break;
-      }
-      this.eventService.setCurrentMainTag(this.currentEvent);
-      this.enableSubtags(this.currentEvent);
-      if (['Shot', 'Save', 'Penalty'].includes(this.currentEvent)) {
-        this.enableGoalAreas();
-      }
+  }
+
+  handleBackward() {
+    if (this.playerYT) {
+      const currentTime = this.playerYT.getCurrentTime();
+      this.playerYT.seekTo(currentTime - 1, true);
+    } else if (this.localVideoPlayer) {
+      const video = this.localVideoPlayer.nativeElement;
+      video.currentTime -= 1;
+    }
+  }
+
+  handleForward() {
+    if (this.playerYT) {
+      const currentTime = this.playerYT.getCurrentTime();
+      this.playerYT.seekTo(currentTime + 1, true);
+    } else if (this.localVideoPlayer) {
+      const video = this.localVideoPlayer.nativeElement;
+      video.currentTime += 1;
     }
   }
 

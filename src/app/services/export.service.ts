@@ -29,7 +29,7 @@ export class ExportService {
   private convertToCsv(data: DataItem[]): string {
     // Define the headers for your CSV
     const csvHeader =
-      'Team,Time,Jersey,Player,Event,X,Y,endX,endY,Foot,Outcome,Key Pass,Assist,Through Pass,Clearance,Hand Foul,Goal Area';
+      'Team,Time,Jersey,Player,Event,X,Y,endX,endY,Foot,Outcome,Key Pass,Assist,Through Pass,Clearance,Take On,Hand Foul,Goal Area';
 
     // Map each item in the data array to extract the desired properties
     const csvRows = data.map((item) => {
@@ -58,10 +58,11 @@ export class ExportService {
       const assist = subEvents.assist || '';
       const throughpass = subEvents.throughpass || '';
       const clearance = subEvents.clearance || '';
+      const takeon = subEvents.takeon || '';
       const handfoul = subEvents.handfoul || '';
 
       // Join the extracted properties as a CSV row
-      return `${team},${time},${jersey},${name},${event},${X},${Y},${endX},${endY},${foot},${outcome},${keypass},${assist},${throughpass},${clearance},${handfoul},${goalArea}`;
+      return `${team},${time},${jersey},${name},${event},${X},${Y},${endX},${endY},${foot},${outcome},${keypass},${assist},${throughpass},${clearance},${takeon},${handfoul},${goalArea}`;
     });
 
     // Join the header and rows with newline characters to form the CSV content

@@ -54,18 +54,18 @@ export const ALLSUBTAGS: Subtag[] = [
   {
     type: 'Completion',
     name: 'Complete',
-    category: ['Pass', 'Take On', 'Tackle', 'Long Kick'],
+    category: ['Pass', 'Long Kick'],
     disabled: true,
     clicked: false,
-    bgColor: '#99004d',
+    bgColor: '#996633',
   },
   {
     type: 'Completion',
     name: 'Incomplete',
-    category: ['Pass', 'Take On', 'Tackle', 'Long Kick'],
+    category: ['Pass', 'Long Kick'],
     disabled: true,
     clicked: false,
-    bgColor: '#99004d',
+    bgColor: '#996633',
   },
 
   // OUTCOME
@@ -101,21 +101,23 @@ export const ALLSUBTAGS: Subtag[] = [
     clicked: false,
     bgColor: '#ff1a8c',
   },
+
+  // WON or LOST
   {
     type: 'Outcome',
-    name: 'Yellow Card',
-    category: ['Foul'],
+    name: 'Won',
+    category: ['Offensive Duel', 'Defensive Duel', 'Air Duel', 'LBD'],
     disabled: true,
     clicked: false,
-    bgColor: '#ff1a8c',
+    bgColor: '#3399ff',
   },
   {
     type: 'Outcome',
-    name: 'Red Card',
-    category: ['Foul'],
+    name: 'Lost',
+    category: ['Offensive Duel', 'Defensive Duel', 'Air Duel', 'LBD'],
     disabled: true,
     clicked: false,
-    bgColor: '#ff1a8c',
+    bgColor: '#3399ff',
   },
 
   // KEY PASS (boolean)
@@ -142,7 +144,7 @@ export const ALLSUBTAGS: Subtag[] = [
   {
     type: 'Through Pass',
     name: 'Through Pass',
-    category: ['Pass'],
+    category: ['Pass', 'Long Kick'],
     disabled: true,
     clicked: false,
     bgColor: '#00b359',
@@ -158,6 +160,15 @@ export const ALLSUBTAGS: Subtag[] = [
     bgColor: '#00b359',
   },
 
+  {
+    type: 'Take On',
+    name: 'Take On',
+    category: ['Offensive Duel', 'Defensive Duel'],
+    disabled: true,
+    clicked: false,
+    bgColor: '#cc00cc',
+  },
+
   // HAND FOUL
   {
     type: 'Hand Foul',
@@ -165,7 +176,25 @@ export const ALLSUBTAGS: Subtag[] = [
     category: ['Foul'],
     disabled: true,
     clicked: false,
-    bgColor: '#00bfff',
+    bgColor: '#86b300',
+  },
+
+  // BOOKINGS
+  {
+    type: 'Outcome',
+    name: 'Yellow Card',
+    category: ['Foul'],
+    disabled: true,
+    clicked: false,
+    bgColor: '#cc6699',
+  },
+  {
+    type: 'Outcome',
+    name: 'Red Card',
+    category: ['Foul'],
+    disabled: true,
+    clicked: false,
+    bgColor: '#cc6699',
   },
 
   //other

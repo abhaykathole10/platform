@@ -41,6 +41,7 @@ export interface SubEvents {
   assist: boolean;
   throughpass: boolean;
   clearance: boolean;
+  takeon: boolean;
   handfoul: boolean;
 }
 

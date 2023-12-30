@@ -191,12 +191,16 @@ export class TaggerComponent {
           case 'F9' + 0: // MUTE is SAVE
             this.currentEvent = 'Save';
             break;
-          case 'ArrowRight' + 0: // < is TAKE ON
-            this.currentEvent = 'Take On';
+          case 'ArrowRight' + 0: // < OFFENSIVE DUEL
+            this.currentEvent = 'Offensive Duel';
             event.preventDefault();
             break;
-          case 'ArrowLeft' + 0: // > is TACKLE
-            this.currentEvent = 'Tackle';
+          case 'ArrowLeft' + 0: // > DEFENSIVE DUEL
+            this.currentEvent = 'Defensive Duel';
+            event.preventDefault();
+            break;
+          case 'ArrowUp' + 0: // ^ is AIR BALL DUEL
+            this.currentEvent = 'Air Duel';
             event.preventDefault();
             break;
           case 'ArrowDown' + 0: // v is LOOSE BALL DUEL
@@ -432,6 +436,7 @@ export class TaggerComponent {
         case 'assist':
         case 'throughpass':
         case 'clearance':
+        case 'takeon':
         case 'handfoul':
           (this.subtagsSelected as any)[subtagType] = !(
             this.subtagsSelected as any
@@ -528,6 +533,7 @@ export class TaggerComponent {
       assist: false,
       throughpass: false,
       clearance: false,
+      takeon: false,
       handfoul: false,
     };
     this.startCoordinates = { x: '', y: '' };

@@ -167,7 +167,7 @@
 }
 
 .goal-grid div {
-  background-color: #1bd3dd;
+  background-color: #b3b3cc;
   color: #fff;
   border: none;
   cursor: pointer;
@@ -180,7 +180,7 @@
 }
 
 .goal-grid div:hover {
-  background-color: #0056b3;
+  background-color: #7575a3;
 }
 
 .disableGoalAreas {
@@ -189,7 +189,7 @@
 }
 
 .goalAreaSelected {
-  background-color: blueviolet !important;
+  background-color: #0056b3 !important;
 }
 
 /* VIDEO PLAYER */

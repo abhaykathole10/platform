@@ -169,12 +169,13 @@ export class TaggerComponent {
   @HostListener('document:keydown', ['$event'])
   handleMainEvents(event: KeyboardEvent) {
     if (!this.editModeON) {
-      switch (event.key) {
-        case 'AltGraph':
+      switch (event.key + event.location) {
+        case 'AltGraph' + 2:
+        case 'Alt' + 2:
           this.handleBackward();
           break;
 
-        case 'ContextMenu':
+        case 'ContextMenu' + 0:
           window.addEventListener('contextmenu', (e) => e.preventDefault());
           this.handleForward();
           break;

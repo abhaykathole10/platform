@@ -240,8 +240,7 @@ export class TaggerComponent {
           case 'End' + 0: // End is RECOVERY
             this.currentEvent = 'Recovery';
             break;
-          case 'NumLock' + 0: // Numlock is CORNER
-          case 'Clear' + 0:
+          case '*' + 3: // * is CORNER
             this.currentEvent = 'Corner';
             break;
           case 'F8' + 0: // F11 is OFFSIDE

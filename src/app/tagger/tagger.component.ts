@@ -172,12 +172,12 @@ export class TaggerComponent {
       switch (event.key + event.location) {
         case 'AltGraph' + 2:
         case 'Alt' + 2:
-          this.handleBackward();
+          this.handleForward();
           break;
 
         case 'ContextMenu' + 0:
           window.addEventListener('contextmenu', (e) => e.preventDefault());
-          this.handleForward();
+          this.handleBackward();
           break;
       }
       if (this.currentPlayerJersey && this.currentPlayerName) {

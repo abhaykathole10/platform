@@ -252,6 +252,9 @@ export class TaggerComponent {
           case 'Delete' + 0: // Delete(normal) is BALL OUT
             this.currentEvent = 'Ball Out';
             break;
+          case '7' + 3: // NUM 7 is SUBBED OUT
+            this.currentEvent = 'Subbed Out';
+            break;
         }
         this.eventService.setCurrentMainTag(this.currentEvent);
         this.enableSubtags(this.currentEvent);

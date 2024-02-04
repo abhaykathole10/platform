@@ -88,7 +88,7 @@ export const ALLSUBTAGS: Subtag[] = [
   {
     type: 'Outcome',
     name: 'Blocked',
-    category: ['Shot', 'Penalty'],
+    category: ['Shot', 'Penalty', 'Cross'],
     disabled: true,
     clicked: false,
     bgColor: '#ff1a8c',

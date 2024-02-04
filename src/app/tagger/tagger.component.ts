@@ -255,6 +255,9 @@ export class TaggerComponent {
           case '7' + 3: // NUM 7 is SUBBED OUT
             this.currentEvent = 'Subbed Out';
             break;
+          case '1' + 3: // NUM 1 is HEAD PASS
+            this.currentEvent = 'Head Pass';
+            break;
         }
         this.eventService.setCurrentMainTag(this.currentEvent);
         this.enableSubtags(this.currentEvent);

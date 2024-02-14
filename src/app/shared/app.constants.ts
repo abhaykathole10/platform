@@ -54,7 +54,7 @@ export const ALLSUBTAGS: Subtag[] = [
   {
     type: 'Completion',
     name: 'Complete',
-    category: ['Pass', 'Long Kick'],
+    category: ['Pass', 'Long Kick', 'Head Pass'],
     disabled: true,
     clicked: false,
     bgColor: '#996633',
@@ -62,7 +62,7 @@ export const ALLSUBTAGS: Subtag[] = [
   {
     type: 'Completion',
     name: 'Incomplete',
-    category: ['Pass', 'Long Kick'],
+    category: ['Pass', 'Long Kick', 'Head Pass'],
     disabled: true,
     clicked: false,
     bgColor: '#996633',

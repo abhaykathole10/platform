@@ -34,6 +34,7 @@ export class TaggerComponent {
     'Throw In',
     'Carry',
     'Corner',
+    'Head Pass',
   ];
 
   // CONFIGURATION

@@ -27,6 +27,7 @@ export class TaggerComponent {
   // EVENTS THAT NEED START & END locations
   trackableEvents: string[] = [
     'Pass',
+    'Shot',
     'Goal Kick',
     'Long Kick',
     'Cross',
@@ -238,8 +239,8 @@ export class TaggerComponent {
           case 'PageUp' + 0: // PageUp is CARRY
             this.currentEvent = 'Carry';
             break;
-          case 'End' + 0: // End is RECOVERY
-            this.currentEvent = 'Recovery';
+          case 'End' + 0: // End is Touch (initially Recovery)
+            this.currentEvent = 'Touch';
             break;
           case '*' + 3: // * is CORNER
             this.currentEvent = 'Corner';

@@ -124,7 +124,14 @@ export const ALLSUBTAGS: Subtag[] = [
   {
     type: 'Key Pass',
     name: 'Key Pass',
-    category: ['Pass', 'Long Kick', 'Cross', 'Free Kick', 'Corner'],
+    category: [
+      'Pass',
+      'Long Kick',
+      'Cross',
+      'Free Kick',
+      'Corner',
+      'Head Pass',
+    ],
     disabled: true,
     clicked: false,
     bgColor: '#00b359',
@@ -134,7 +141,14 @@ export const ALLSUBTAGS: Subtag[] = [
   {
     type: 'Assist',
     name: 'Assist',
-    category: ['Pass', 'Long Kick', 'Cross', 'Free Kick', 'Corner'],
+    category: [
+      'Pass',
+      'Long Kick',
+      'Cross',
+      'Free Kick',
+      'Corner',
+      'Head Pass',
+    ],
     disabled: true,
     clicked: false,
     bgColor: '#00b359',
@@ -197,15 +211,17 @@ export const ALLSUBTAGS: Subtag[] = [
     bgColor: '#cc6699',
   },
 
-  //other
+  // Touch
   {
-    type: 'none',
-    name: 'none',
-    category: ['pass'],
+    type: 'Outcome',
+    name: 'Bad',
+    category: ['Touch'],
     disabled: true,
     clicked: false,
-    bgColor: '#a3c2c2',
+    bgColor: '#8585ad',
   },
+
+  //other
   {
     type: 'none',
     name: 'none',

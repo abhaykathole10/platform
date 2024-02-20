@@ -36,6 +36,7 @@ export class TaggerComponent {
     'Carry',
     'Corner',
     'Head Pass',
+    'Hand Pass',
   ];
 
   // CONFIGURATION
@@ -259,6 +260,9 @@ export class TaggerComponent {
             break;
           case '1' + 3: // NUM 1 is HEAD PASS
             this.currentEvent = 'Head Pass';
+            break;
+          case 'Home' + 0: // Home for Hand Pass
+            this.currentEvent = 'Hand Pass';
             break;
         }
         this.eventService.setCurrentMainTag(this.currentEvent);

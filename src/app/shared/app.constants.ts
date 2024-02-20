@@ -168,7 +168,7 @@ export const ALLSUBTAGS: Subtag[] = [
   {
     type: 'Clearance',
     name: 'Clearance',
-    category: ['Pass', 'Interception', 'Long Kick'],
+    category: ['Pass', 'Interception', 'Long Kick', 'Hand Pass'],
     disabled: true,
     clicked: false,
     bgColor: '#00b359',

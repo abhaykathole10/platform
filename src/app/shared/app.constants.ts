@@ -54,7 +54,7 @@ export const ALLSUBTAGS: Subtag[] = [
   {
     type: 'Completion',
     name: 'Complete',
-    category: ['Pass', 'Long Kick', 'Head Pass'],
+    category: ['Pass', 'Long Kick', 'Head Pass', 'Hand Pass'],
     disabled: true,
     clicked: false,
     bgColor: '#996633',
@@ -62,7 +62,7 @@ export const ALLSUBTAGS: Subtag[] = [
   {
     type: 'Completion',
     name: 'Incomplete',
-    category: ['Pass', 'Long Kick', 'Head Pass'],
+    category: ['Pass', 'Long Kick', 'Head Pass', 'Hand Pass'],
     disabled: true,
     clicked: false,
     bgColor: '#996633',
@@ -168,7 +168,7 @@ export const ALLSUBTAGS: Subtag[] = [
   {
     type: 'Clearance',
     name: 'Clearance',
-    category: ['Pass', 'Interception', 'Long Kick', 'Hand Pass'],
+    category: ['Pass', 'Interception', 'Long Kick', 'Head Pass', 'Hand Pass'],
     disabled: true,
     clicked: false,
     bgColor: '#00b359',

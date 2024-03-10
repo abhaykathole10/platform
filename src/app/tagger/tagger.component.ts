@@ -242,6 +242,7 @@ export class TaggerComponent {
             break;
           case 'End' + 0: // End is Touch (initially Recovery)
             this.currentEvent = 'Touch';
+            event.preventDefault();
             break;
           case '*' + 3: // * is CORNER
             this.currentEvent = 'Corner';

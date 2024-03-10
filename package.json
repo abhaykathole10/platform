@@ -6,7 +6,8 @@
     "start": "ng serve --port 4330",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "test:local": "ng test --code-coverage --watch=true"
   },
   "private": true,
   "dependencies": {

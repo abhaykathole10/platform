@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaggerComponent } from './tagger.component';
-import { ALLSUBTAGS } from '../shared/app.constants';
 
 describe('TaggerComponent', () => {
   let component: TaggerComponent;
@@ -118,7 +117,7 @@ describe('TaggerComponent', () => {
       handfoul: false,
     };
     const eventData = {
-      id: (new Date().getTime() + 1).toString(),
+      id: jasmine.any(String),
       team: 'em',
       time: '',
       jersey: '12',
@@ -150,6 +149,107 @@ describe('TaggerComponent', () => {
     component.exportEvent();
 
     expect(addEventData).toHaveBeenCalledWith(eventData);
+  });
+
+  it('should test getVideoId() method', () => {
+    const url = 'https://www.youtube.com/watch?v=wJzzaqBxGOU';
+    const res = component.getVideoId(url);
+    expect(res).toEqual('wJzzaqBxGOU');
+  });
+
+  describe('it should test setEventTimeStamp() method', () => {
+    it('should set current time and call formatTime() method for local video upload', () => {
+      const formatTimeSpy = spyOn(component, 'formatTime').and.returnValue('5');
+
+      component.localUpload = true;
+      component.localVideoPlayer = {
+        nativeElement: {
+          currentTime: 5,
+        },
+      };
+
+      component.setEventTimeStamp();
+
+      expect(formatTimeSpy).toHaveBeenCalledWith(5);
+      expect(component.currentTime).toEqual('5');
+    });
+
+    it('should set current time and call formatTime() method for youtube video player', () => {
+      const formatTimeSpy = spyOn(component, 'formatTime').and.returnValue('5');
+
+      component.youtubeUpload = true;
+      const playerYTMock = {
+        getCurrentTime: jasmine.createSpy('getCurrentTime').and.returnValue(5),
+        seekTo: jasmine.createSpy('seekTo'),
+      };
+      component.playerYT = playerYTMock;
+
+      component.setEventTimeStamp();
+
+      expect(playerYTMock.getCurrentTime).toHaveBeenCalled();
+      expect(formatTimeSpy).toHaveBeenCalledWith(5);
+      expect(component.currentTime).toEqual('5');
+    });
+  });
+
+  describe('it should test handleBackward() method', () => {
+    it('should seek back youtube video by 1 sec', () => {
+      // Mock playerYT and set current time
+      const playerYTMock = {
+        getCurrentTime: jasmine.createSpy('getCurrentTime').and.returnValue(5),
+        seekTo: jasmine.createSpy('seekTo'),
+      };
+      component.playerYT = playerYTMock;
+
+      component.handleBackward();
+
+      expect(playerYTMock.getCurrentTime).toHaveBeenCalled();
+
+      expect(playerYTMock.seekTo).toHaveBeenCalledWith(4, true);
+    });
+
+    it('should seek back local video player by 1 sec', () => {
+      component.playerYT = undefined;
+      component.localVideoPlayer = {
+        nativeElement: {
+          currentTime: 5,
+        },
+      };
+
+      component.handleBackward();
+
+      expect(component.localVideoPlayer.nativeElement.currentTime).toEqual(4);
+    });
+  });
+
+  describe('it should test handleForward() method', () => {
+    it('should seek front youtube video by 1 sec', () => {
+      // Mock playerYT and set current time
+      const playerYTMock = {
+        getCurrentTime: jasmine.createSpy('getCurrentTime').and.returnValue(5),
+        seekTo: jasmine.createSpy('seekTo'),
+      };
+      component.playerYT = playerYTMock;
+
+      component.handleForward();
+
+      expect(playerYTMock.getCurrentTime).toHaveBeenCalled();
+
+      expect(playerYTMock.seekTo).toHaveBeenCalledWith(6, true);
+    });
+
+    it('should seek back local video player by 1 sec', () => {
+      component.playerYT = undefined;
+      component.localVideoPlayer = {
+        nativeElement: {
+          currentTime: 5,
+        },
+      };
+
+      component.handleForward();
+
+      expect(component.localVideoPlayer.nativeElement.currentTime).toEqual(6);
+    });
   });
 
   describe('testing onVideoUpload() method', () => {

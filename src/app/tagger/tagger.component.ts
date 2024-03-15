@@ -77,7 +77,7 @@ export class TaggerComponent {
   @ViewChild('localVideoPlayer') localVideoPlayer: ElementRef;
   @ViewChild('youtubePlayerContainer') youtubePlayerContainer: ElementRef;
 
-  private playerYT: any;
+  playerYT: any;
 
   constructor(
     private eventService: EventService,
@@ -98,7 +98,7 @@ export class TaggerComponent {
   }
 
   //  INITIALIZING YOUTUBE PLAYER
-  private initYoutubePlayer() {
+  initYoutubePlayer() {
     if (this.youtubeUpload) {
       if ((window as any).YT && (window as any).YT.Player) {
         this.playerYT = new (window as any).YT.Player(
@@ -116,7 +116,7 @@ export class TaggerComponent {
   }
 
   // EXTRRACTING VIDEO ID FROM YOUTUBE VIDEO URL
-  private getVideoId(url: string): string {
+  getVideoId(url: string): string {
     const match = url.match(/[?&]v=([^?&]+)/);
     return match ? match[1] : '';
   }

@@ -394,3 +394,17 @@ export const ALLGOALAREAS: GoalArea[] = [
     clicked: false,
   },
 ];
+
+export const TRACKABLE_EVENTS: string[] = [
+  'Pass',
+  'Shot',
+  'Goal Kick',
+  'Long Kick',
+  'Cross',
+  'Free Kick',
+  'Throw In',
+  'Carry',
+  'Corner',
+  'Head Pass',
+  'Hand Pass',
+];

@@ -1,0 +1,289 @@
+/* PARENT */
+.parent-container {
+  display: flex;
+  flex-direction: row;
+  height: auto;
+}
+
+/* RESIZABLE DIV */
+.resizable-div {
+  resize: both;
+  overflow: hidden;
+  width: 70vw;
+  height: 75vh;
+  max-width: 75vw;
+  max-height: 80vh;
+  border: 1px solid #000;
+}
+
+/* NON-RESIZABLE DIV */
+.fill-div {
+  flex: 1;
+  background-color: white;
+  overflow: auto;
+  height: fit-content;
+  max-height: 80vh;
+  border: 1px solid green;
+}
+
+/* PITCH */
+.pitch-class {
+  background-image: url(../../../src/assets/pitch.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 0;
+  padding-top: 64.3%;
+  position: relative;
+}
+
+/* PLAYERS */
+.player {
+  position: absolute;
+  width: 15%;
+  height: 10%;
+  background-color: rgb(171, 247, 95);
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  cursor: text;
+  text-align: center;
+  white-space: nowrap;
+  border-radius: 5px;
+  border: 1px solid black;
+}
+
+.player-details {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: bold;
+  font-size: 1vw;
+  padding-left: 2px;
+}
+
+.player:hover {
+  background-color: rgb(166, 255, 227);
+}
+
+.p0 {
+  top: 2%;
+  left: 2%;
+}
+
+.p1 {
+  top: 45%;
+  left: 2%;
+}
+.p2 {
+  top: 15%;
+  left: 25%;
+}
+.p3 {
+  top: 35%;
+  left: 25%;
+}
+.p4 {
+  top: 55%;
+  left: 25%;
+}
+.p5 {
+  top: 75%;
+  left: 25%;
+}
+.p6 {
+  top: 25%;
+  left: 50%;
+}
+.p7 {
+  top: 45%;
+  left: 50%;
+}
+.p8 {
+  top: 65%;
+  left: 50%;
+}
+.p9 {
+  top: 25%;
+  left: 75%;
+}
+.p10 {
+  top: 45%;
+  left: 75%;
+}
+.p11 {
+  top: 65%;
+  left: 75%;
+}
+
+/* SUBTAGS */
+.subtags-div {
+  width: 100%;
+  height: auto;
+}
+
+.subtags-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-gap: 1px;
+}
+
+.subtags-grid div {
+  background-color: #dd1bc6;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: center;
+  font-size: 1vw;
+}
+
+.subtags-grid div:hover {
+  background-color: #b616a3;
+}
+
+.disableSubtags {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.subtagSelected {
+  background-color: #0056b3 !important;
+}
+
+/* GOAL MAP */
+.goal-div {
+  width: 100%;
+  height: auto;
+  background-color: white;
+}
+
+.goal-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr 2fr 1fr;
+  grid-gap: 1px;
+}
+
+.goal-grid div {
+  background-color: #b3b3cc;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: center;
+  font-size: 1vw;
+}
+
+.goal-grid div:hover {
+  background-color: #7575a3;
+}
+
+.disableGoalAreas {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.goalAreaSelected {
+  background-color: #0056b3 !important;
+}
+
+/* VIDEO PLAYER */
+.video-player {
+  width: 100%;
+}
+
+.youtube-player {
+  width: 100%;
+  height: 100%;
+}
+
+.div-disabled {
+  background-color: #74cffa;
+  cursor: pointer;
+}
+
+.div-readonly {
+  background-color: yellow;
+  pointer-events: none;
+}
+
+.hide-players {
+  display: none;
+}
+
+/* TOOLBAR */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: hsl(340, 85%, 98%);
+  border: 1px solid #ccc;
+}
+
+.toolbar input[type="text"] {
+  width: 8rem;
+}
+
+.toolbar input[type="text"]:read-only {
+  cursor: not-allowed;
+}
+.team-input {
+  max-height: 25px;
+}
+.toolbar button {
+  min-width: 10vh;
+  padding: 2px 4px;
+}
+.side-items {
+  margin-left: auto;
+}
+.brand-name {
+  color: rgb(94, 5, 85);
+  text-decoration: none;
+  font-size: x-large;
+}
+
+.readonly-input {
+  background-color: #f0f0f0;
+  border: none;
+}
+
+.mode-class {
+  width: 8rem;
+  font-weight: bold;
+  text-align: center;
+  background-color: rgb(245, 245, 16);
+}
+
+.fileUploadButton [type="file"] {
+  cursor: pointer;
+  display: block;
+  font-size: 999px;
+  filter: alpha(opacity=0);
+  min-height: 100%;
+  max-width: 100%;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  text-align: right;
+  top: 0;
+}
+
+.custom-btn {
+  width: 1.7rem;
+  height: 1.5rem;
+  padding: 0 1px;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.custom-btn:hover {
+  background-color: rgba(0, 0, 0, 0.11);
+}

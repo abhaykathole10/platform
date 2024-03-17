@@ -9,6 +9,7 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
 import { EventsComponent } from './events/events.component';
 import { SafePipe } from './pipes/safe.pipe';
 import { FormsModule } from '@angular/forms';
+import { TestComponent } from './test/test.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { FormsModule } from '@angular/forms';
     ToolbarComponent,
     EventsComponent,
     SafePipe,
+    TestComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [],

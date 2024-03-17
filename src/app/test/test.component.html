@@ -1,0 +1,280 @@
+<!-- TOOLBAR -->
+<!-- <app-toolbar
+  #toolbar
+  [areAllPlayersFilled]="areAllPlayersFilled"
+  [editModeON]="editModeON"
+  [videoUploaded]="localVideoPlayer ? true : false"
+  (taggingButtonClicked)="taggingButtonClicked($event)"
+  (onVideoUpload)="onDoneClickAndVideoUpload($event)"
+  (switchSideButtonClicked)="onSwitchSide()"
+></app-toolbar> -->
+
+<!-- //////////////////////////////////////////// TOOLBAR START ///////////////////////////////////////////////////// -->
+
+<div class="container-fluid py-0">
+  <div class="row">
+    <div class="col p-0">
+      <div class="toolbar py-0" style="height: 2rem">
+        <a href="#"><img src="assets/bm_ball.png" style="width: 2rem" /></a>
+
+        <!-- Open Modal -->
+        <!-- <button
+          type="button"
+          class="btn btn-sm btn-outline-success"
+          data-bs-toggle="modal"
+          data-bs-target="#selectVideo"
+          (click)="openModalClicked()"
+        >
+          Load video
+        </button> -->
+
+        <!-- local upload button -->
+        <span class="fileContainer" style="margin-bottom: 2.5px">
+          <img
+            src="../../assets/video-upload-icon-2.png"
+            alt="Local"
+            class="btn btn-sm custom-btn"
+            id="imageButton"
+            data-bs-toggle="tooltip"
+            [title]="'Local video upload'"
+          />
+          <input type="file" id="video-url-input" style="display: none" />
+        </span>
+
+        <!-- youtube upload button -->
+        <span
+          class="ytUploadButton"
+          style="margin: 0 0 2.5px 1px"
+          data-bs-toggle="modal"
+          data-bs-target="#selectVideo"
+          (click)="openModalClicked()"
+        >
+          <img
+            src="../../assets/yt-icon.png"
+            alt="Youtube"
+            class="btn btn-sm custom-btn"
+            data-bs-toggle="tooltip"
+            [title]="'Youtube video upload'"
+          />
+        </span>
+
+        <!-- Enter TEAM NAME -->
+        <input
+          #teamInput
+          type="text"
+          class="team-input"
+          [(ngModel)]="currentTeam"
+          placeholder="Enter team name"
+          [readOnly]="teamReadOnly"
+          [ngClass]="{ 'readonly-input': teamReadOnly }"
+        />
+
+        <!-- MODE SWITCH - (Toggle between Edit Mode and Tagging Mode) -->
+        <div class="form-check form-switch">
+          <input
+            #switchButton
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="mode-switch"
+            [disabled]="!areAllPlayersFilled || !currentTeam"
+            [(ngModel)]="switchValue"
+            (click)="taggingButtonClicked(switchButton)"
+          />
+          <label class="form-check-label mode-class" for="mode-switch">{{
+            currentMode
+          }}</label>
+        </div>
+
+        <div class="side-items">
+          <span>{{ playerJersey }} {{ mainEvent }}</span>
+        </div>
+
+        <!-- SIDE SWITCH - (Toggle between First and Second half sides) -->
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="side-switch"
+            (click)="onSwitchSide()"
+          />
+          <label class="form-check-label" for="side-switch">Switch sides</label>
+        </div>
+        <button class="btn btn-sm btn-primary" (click)="exportToCSV()">
+          Export CSV
+        </button>
+        <button class="btn btn-sm btn-danger" (click)="handleReset()">
+          RESET
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  #selectVideo
+  class="modal fade"
+  id="selectVideo"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          Please select video
+        </h1>
+        <button
+          #closeModal
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <!-- Youtube -->
+        <input
+          type="text"
+          class="form-control"
+          id="recipient-name"
+          placeholder="Paste YouTube URL"
+          [(ngModel)]="videoYtUrl"
+          (change)="handleYoutubeUpload()"
+        />
+
+        <!-- <label for="message-text" class="col-form-label">or</label><br /> -->
+
+        <!-- Local -->
+        <!-- <input
+            #fileInput
+            class="video-file"
+            type="file"
+            (change)="onSelectFile($event)"
+          /> -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          [disabled]="!videoYtUrl"
+          type="button"
+          class="btn btn-primary"
+          (click)="onDoneClickYT()"
+        >
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ///////////////////////////////////////////// TOOLBAR END ///////////////////////////////////////////////////// -->
+
+<!-- PARENT CONTAINER -->
+<div class="parent-container">
+  <!-- RESIZABLE CONTAINER -->
+  <div class="resizable-div">
+    <!-- LOCAL VIDEO UPLOAD -->
+    <!-- <video
+        #localVideoPlayer
+        *ngIf="localUpload && url"
+        class="video-player"
+        [src]="url"
+        height="auto"
+        controls
+      ></video> -->
+
+    <div id="video-container"></div>
+
+    <!-- YOUTUBE VIDEO UPLOAD -->
+    <div style="width: 100%; height: 100%" #youtubePlayerContainer>
+      <iframe
+        *ngIf="youtubeUpload"
+        class="youtube-player"
+        [src]="url | safe"
+        frameborder="0"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+
+  <!-- PITCH & SUBTAGS CONTAINER -->
+  <div class="fill-div">
+    <!-- PITCH -->
+    <div
+      #pitchContainer
+      class="pitch-class"
+      [style.transform]="switchSide ? 'rotate(180deg)' : ''"
+      (mousedown)="handleMapMouseDown($event)"
+      (mouseup)="handleMapMouseUp($event)"
+    >
+      <!-- PLAYERS -->
+      <ng-container *ngIf="showPlayers">
+        <div
+          *ngFor="let player of allPlayers; let i = index"
+          [id]="player.id"
+          [class]="player.class"
+          (click)="handlePlayerClick(player)"
+          [ngClass]="{
+            player: true,
+            'div-disabled': !editModeON,
+            'div-readonly': editModeON && player.id === 'p0'
+          }"
+          [style.transform]="switchSide ? 'rotate(180deg)' : ''"
+          data-bs-toggle="tooltip"
+          [title]="player.jersey + ' ' + player.name"
+        >
+          <span class="player-details"
+            >{{ player.jersey }} {{ player.name }}</span
+          >
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- SUBTAGS -->
+    <div class="subtags-div pt-1">
+      <div class="subtags-grid">
+        <div
+          *ngFor="let subtag of allSubTags"
+          [ngStyle]="{
+            'background-color': subtag.bgColor
+          }"
+          [ngClass]="{
+            disableSubtags: subtag.disabled,
+            subtagSelected: subtag.clicked
+          }"
+          (click)="handleSubtagClick(subtag)"
+          data-bs-toggle="tooltip"
+          [title]="subtag.name"
+        >
+          {{ subtag.name }}
+        </div>
+      </div>
+    </div>
+
+    <!-- GOAL SKELETON -->
+    <div class="goal-div pt-1">
+      <div class="goal-grid">
+        <div
+          *ngFor="let area of allGoalAreas"
+          (click)="handleGoalArea(area)"
+          [ngClass]="{
+            disableGoalAreas: area.disabled,
+            goalAreaSelected: area.clicked
+          }"
+        >
+          {{ area.name }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <app-events></app-events>
+</div>

@@ -10,6 +10,7 @@ import { EventsComponent } from './events/events.component';
 import { SafePipe } from './pipes/safe.pipe';
 import { FormsModule } from '@angular/forms';
 import { TestComponent } from './test/test.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,7 @@ import { TestComponent } from './test/test.component';
     SafePipe,
     TestComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule],
+  imports: [BrowserModule, AppRoutingModule, FormsModule, DragDropModule],
   providers: [],
   bootstrap: [AppComponent],
 })

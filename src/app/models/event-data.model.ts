@@ -24,6 +24,14 @@ export interface Player {
   class: string;
   selected: boolean;
 }
+export interface Player2 {
+  id?: string;
+  jersey: string;
+  name: string;
+  selected: boolean;
+  top?: string;
+  left?: string;
+}
 
 export interface Subtag {
   type: string;
@@ -50,4 +58,17 @@ export interface GoalArea {
   category: string;
   disabled: boolean;
   clicked: boolean;
+}
+
+export interface XyPosition {
+  [key: number]: string[];
+}
+
+export interface PossibleFormation {
+  [key: number]: string[];
+}
+
+export interface PlayersConfig {
+  playing: string;
+  formation: string;
 }

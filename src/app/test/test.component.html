@@ -1,15 +1,4 @@
-<!-- TOOLBAR -->
-<!-- <app-toolbar
-  #toolbar
-  [areAllPlayersFilled]="areAllPlayersFilled"
-  [editModeON]="editModeON"
-  [videoUploaded]="localVideoPlayer ? true : false"
-  (taggingButtonClicked)="taggingButtonClicked($event)"
-  (onVideoUpload)="onDoneClickAndVideoUpload($event)"
-  (switchSideButtonClicked)="onSwitchSide()"
-></app-toolbar> -->
-
-<!-- //////////////////////////////////////////// TOOLBAR START ///////////////////////////////////////////////////// -->
+<!-- ////////////////////////////////// TOOLBAR START /////////////////////////////////////////// -->
 
 <div class="container-fluid py-0">
   <div class="row">
@@ -17,21 +6,21 @@
       <div class="toolbar py-0" style="height: 2rem">
         <a href="#"><img src="assets/bm_ball.png" style="width: 2rem" /></a>
 
-        <!-- Open Modal -->
-        <!-- <button
+        <!-- load players modal -->
+        <button
           type="button"
-          class="btn btn-sm btn-outline-success"
+          class="btn btn-sm btn-outline-info"
           data-bs-toggle="modal"
-          data-bs-target="#selectVideo"
-          (click)="openModalClicked()"
+          data-bs-target="#playersConfig"
+          (click)="onCongifModalOpen()"
         >
-          Load video
-        </button> -->
+          Configuration
+        </button>
 
-        <!-- local upload button -->
+        <!-- LOCAL VIDEO UPLOAD BUTTON -->
         <span class="fileContainer" style="margin-bottom: 2.5px">
           <img
-            src="assets/video-upload-icon-2.png"
+            src="../../assets/video-upload-icon-2.png"
             alt="Local"
             class="btn btn-sm custom-btn"
             id="imageButton"
@@ -41,16 +30,16 @@
           <input type="file" id="video-url-input" style="display: none" />
         </span>
 
-        <!-- youtube upload button -->
+        <!-- YOUTUBE VIDEO UPLOAD BUTTON -->
         <span
           class="ytUploadButton"
           style="margin: 0 0 2.5px 1px"
           data-bs-toggle="modal"
-          data-bs-target="#selectVideo"
+          data-bs-target="#youtubeVideoUpload"
           (click)="openModalClicked()"
         >
           <img
-            src="assets/yt-icon.png"
+            src="../../assets/yt-icon.png"
             alt="Youtube"
             class="btn btn-sm custom-btn"
             data-bs-toggle="tooltip"
@@ -79,7 +68,7 @@
             id="mode-switch"
             [disabled]="!areAllPlayersFilled || !currentTeam"
             [(ngModel)]="switchValue"
-            (click)="taggingButtonClicked(switchButton)"
+            (click)="taggingButtonClicked()"
           />
           <label class="form-check-label mode-class" for="mode-switch">{{
             currentMode
@@ -112,91 +101,31 @@
   </div>
 </div>
 
-<!-- Modal -->
-<div
-  #selectVideo
-  class="modal fade"
-  id="selectVideo"
-  tabindex="-1"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">
-          Please select video
-        </h1>
-        <button
-          #closeModal
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <!-- Youtube -->
-        <input
-          type="text"
-          class="form-control"
-          id="recipient-name"
-          placeholder="Paste YouTube URL"
-          [(ngModel)]="videoYtUrl"
-          (change)="handleYoutubeUpload()"
-        />
+<!-- ///////////////////////////////////////////// TOOLBAR END ////////////////////////////////// -->
 
-        <!-- <label for="message-text" class="col-form-label">or</label><br /> -->
-
-        <!-- Local -->
-        <!-- <input
-            #fileInput
-            class="video-file"
-            type="file"
-            (change)="onSelectFile($event)"
-          /> -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
-        </button>
-        <button
-          [disabled]="!videoYtUrl"
-          type="button"
-          class="btn btn-primary"
-          (click)="onDoneClickYT()"
-        >
-          Done
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ///////////////////////////////////////////// TOOLBAR END ///////////////////////////////////////////////////// -->
+<!-- ///////////////////////////////////////////// TAGGER START ///////////////////////////////// -->
 
 <!-- PARENT CONTAINER -->
 <div class="parent-container">
   <!-- RESIZABLE CONTAINER -->
   <div class="resizable-div">
-    <!-- LOCAL VIDEO UPLOAD -->
-    <!-- <video
+    <!-- LOCAL VIDEO DISPLAY CONTAINER -->
+    <div id="video-container">
+      <video
         #localVideoPlayer
-        *ngIf="localUpload && url"
-        class="video-player"
-        [src]="url"
+        width="100%"
         height="auto"
         controls
-      ></video> -->
+        style="display: none"
+      ></video>
+    </div>
 
-    <div id="video-container"></div>
-
-    <!-- YOUTUBE VIDEO UPLOAD -->
+    <!-- YOUTUBE VIDEO DISPLAY CONTAINER -->
     <div style="width: 100%; height: 100%" #youtubePlayerContainer>
       <iframe
         *ngIf="youtubeUpload"
         class="youtube-player"
-        [src]="url | safe"
+        [src]="youtubeUrl | safe"
         frameborder="0"
         allowfullscreen
       ></iframe>
@@ -216,14 +145,14 @@
       <!-- PLAYERS -->
       <ng-container *ngIf="showPlayers">
         <div
-          *ngFor="let player of allPlayers; let i = index"
+          *ngFor="let player of onFieldPlayers; let i = index"
           [id]="player.id"
-          [class]="player.class"
+          [style.top]="player.top"
+          [style.left]="player.left"
           (click)="handlePlayerClick(player)"
           [ngClass]="{
             player: true,
-            'div-disabled': !editModeON,
-            'div-readonly': editModeON && player.id === 'p0'
+            'div-disabled': !editModeON
           }"
           [style.transform]="switchSide ? 'rotate(180deg)' : ''"
           data-bs-toggle="tooltip"
@@ -275,6 +204,197 @@
   </div>
 </div>
 
+<!-- ///////////////////////////////////////////// TAGGER END ///////////////////////////////// -->
+
+<!-- EVENT DATA TABLE -->
 <div>
   <app-events></app-events>
+</div>
+
+<!-- MODALS -->
+
+<!-- YOUTUBE VIDEO UPLOAD MODAL -->
+<div
+  #youtubeVideoUpload
+  class="modal fade"
+  id="youtubeVideoUpload"
+  tabindex="-1"
+  aria-labelledby="pasteYoutubeUrl"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="pasteYoutubeUrl">
+          Please paste Youtube video URL
+        </h1>
+        <button
+          #closeModal
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <!-- Youtube -->
+        <input
+          type="text"
+          class="form-control"
+          id="recipient-name"
+          placeholder="Paste Youtube URL"
+          [(ngModel)]="videoYtUrl"
+          (change)="handleYoutubeUpload()"
+        />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          [disabled]="!videoYtUrl"
+          type="button"
+          class="btn btn-primary"
+          (click)="onDoneClickYT()"
+        >
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PLAYERS CONFIGURATION MODAL -->
+<div
+  #playersConfig
+  id="playersConfig"
+  class="modal fade"
+  tabindex="-1"
+  aria-labelledby="configurePlayers"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" style="max-width: 40rem">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="configurePlayers">Configuration</h3>
+        <button
+          #closeConfigModal
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <!-- PLAYING & FORMATION -->
+        <div class="select-wrapper">
+          <div class="select-container">
+            <label for="playing">Playing:</label>
+            <select
+              #playing
+              id="playing"
+              class="form-select form-select-sm"
+              (change)="onSelectPlaying($event)"
+            >
+              <option disabled selected>Select</option>
+              <option *ngFor="let i of playingDDValues">{{ i }}</option>
+            </select>
+          </div>
+          <div class="select-container">
+            <label for="formation">Formation:</label>
+            <select
+              #formation
+              id="formation"
+              class="form-select form-select-sm"
+              style="min-width: 6rem"
+              [disabled]="disableFormationdd"
+              (change)="onSelectFormation($event)"
+            >
+              <option disabled selected>Select</option>
+              <option *ngFor="let i of formationDDValues">{{ i }}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ADD PLAYER INPUT -->
+        <div style="margin-top: 1rem">
+          <small>Player: </small>
+          <input
+            #jersey
+            type="text"
+            class="config-player-input"
+            style="width: 2rem"
+            [(ngModel)]="configPlayerJersey"
+          />
+          <input
+            type="text"
+            class="config-player-input"
+            style="margin-left: 2px"
+            [(ngModel)]="configPlayerName"
+          />
+          <input
+            type="submit"
+            value="Add"
+            class="config-add-button"
+            (click)="addPlayerOnList()"
+          />
+        </div>
+
+        <hr />
+
+        <div style="display: flex; width: 40rem">
+          <!-- PLAYERS LIST CONTAINER -->
+          <div class="config-players-container">
+            <ng-container *ngFor="let i of onListPlayers">
+              <div
+                class="config-players-container-div"
+                data-bs-toggle="tooltip"
+                [title]="i.jersey + '. ' + i.name"
+                (click)="addPlayerOnField(i)"
+              >
+                <span>{{ i.jersey }}. {{ i.name }}</span>
+              </div>
+
+              <span
+                type="button"
+                class="btn-close btn-close-red config-remove-button"
+                aria-label="Close"
+                (click)="removePlayerFromListandField(i)"
+              ></span>
+            </ng-container>
+          </div>
+
+          <!-- DRAG DROP CONTAINER -->
+          <div
+            class="drag-lineup-container"
+            cdkDropList
+            (cdkDropListDropped)="drop($event)"
+          >
+            <div
+              cdkDrag
+              class="item-dragdrop"
+              *ngFor="let player of onFieldPlayers; let i = index"
+              style="margin-top: 2px"
+              [ngStyle]="{
+                'margin-top': spaceArray.includes(i) ? '10px' : '2px'
+              }"
+              (click)="removePlayerFromField(player)"
+            >
+              {{ player.jersey }}. {{ player.name }}
+            </div>
+          </div>
+        </div>
+
+        <!-- CLEAR ALL PLAYERS FROM THE LIST -->
+        <button
+          type="button"
+          style="display: block"
+          class="btn btn-sm btn-danger mt-2 pt-0 pb-0"
+          (click)="removeAllPlayerFromListandField()"
+        >
+          Clear all
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

@@ -65,56 +65,6 @@
   background-color: rgb(166, 255, 227);
 }
 
-.p0 {
-  top: 2%;
-  left: 2%;
-}
-
-.p1 {
-  top: 45%;
-  left: 2%;
-}
-.p2 {
-  top: 15%;
-  left: 25%;
-}
-.p3 {
-  top: 35%;
-  left: 25%;
-}
-.p4 {
-  top: 55%;
-  left: 25%;
-}
-.p5 {
-  top: 75%;
-  left: 25%;
-}
-.p6 {
-  top: 25%;
-  left: 50%;
-}
-.p7 {
-  top: 45%;
-  left: 50%;
-}
-.p8 {
-  top: 65%;
-  left: 50%;
-}
-.p9 {
-  top: 25%;
-  left: 75%;
-}
-.p10 {
-  top: 45%;
-  left: 75%;
-}
-.p11 {
-  top: 65%;
-  left: 75%;
-}
-
 /* SUBTAGS */
 .subtags-div {
   width: 100%;
@@ -286,4 +236,138 @@
 
 .custom-btn:hover {
   background-color: rgba(0, 0, 0, 0.11);
+}
+
+/* CONFIGURATION POPUP */
+
+/* Enter player jersey */
+.config-player-input {
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+/* Enter player name */
+.config-player-input:focus {
+  box-shadow: 0 0 5pt 2pt #d3d3d3;
+  outline-width: 0px;
+}
+
+/* Add button */
+.config-add-button {
+  margin-left: 2px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.config-add-button:hover {
+  background-color: #45a049;
+}
+
+/* Remove button */
+.config-remove-button {
+  font-size: small;
+  border: 0.5px solid black;
+}
+
+.config-remove-button:hover {
+  background-color: #ffcccc;
+}
+
+/* Parent container of Players list */
+.config-players-container {
+  margin-top: 1px;
+  width: 16rem;
+  min-width: 16rem;
+  height: 18rem;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 2px;
+  overflow: auto;
+  scrollbar-color: 5c636a white;
+  scrollbar-width: thin;
+}
+
+/* Player details div */
+.config-players-container-div {
+  font-size: small;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: inline-block;
+  width: 12.2rem;
+  text-align: left;
+  padding-left: 2px;
+  margin: 0 1px;
+  border: 1px solid green;
+  border-radius: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.config-players-container-div:hover {
+  background-color: rgb(87, 246, 134);
+  cursor: pointer;
+}
+
+/* Drag drop */
+.drag-lineup-container {
+  margin: 1px 0 0 5px;
+  width: 20rem;
+  height: 18rem;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  align-items: center;
+  padding: 5px;
+}
+
+.container-dragdrop {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  width: 100px;
+  align-items: center;
+  padding: 5px;
+}
+
+.item-dragdrop {
+  width: 75px;
+  height: 20px;
+  margin: 1px;
+  background-color: lightblue;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  border: 1px solid black;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-dragdrop:hover {
+  cursor: pointer;
+}
+
+.select-wrapper {
+  display: flex;
+}
+
+.select-container {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.select-container:last-child {
+  margin-right: 0;
+}
+
+.select-container label {
+  margin-right: 5px;
+}
+
+.selectDD {
+  min-width: 25%;
 }

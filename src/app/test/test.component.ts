@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import {
   DataItem,
-  Player,
+  Player2,
   Subtag,
   Coordinate,
   GoalArea,
@@ -16,6 +16,13 @@ import {
   TRACKABLE_EVENTS,
 } from '../shared/app.constants';
 import { ExportService } from '../services/export.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import {
+  PLAYING,
+  POSSIBLE_FORMATIONS,
+  POSITION_X,
+  POSITION_Y,
+} from '../shared/config.constants';
 
 @Component({
   selector: 'app-test',
@@ -23,11 +30,13 @@ import { ExportService } from '../services/export.service';
   styleUrls: ['./test.component.css'],
 })
 export class TestComponent {
-  allPlayers: Player[] = [];
   allSubTags: Subtag[] = ALLSUBTAGS;
   allGoalAreas: GoalArea[] = ALLGOALAREAS;
 
   private playerDataSubscription: Subscription;
+  private onFieldPlayerDataSubscription: Subscription;
+  private onListPlayerDataSubscription: Subscription;
+  private playersConfigSubscription: Subscription;
 
   // EVENTS THAT NEED START & END locations
   trackableEvents: string[] = TRACKABLE_EVENTS;
@@ -40,8 +49,7 @@ export class TestComponent {
 
   // VIDEO
   url: any;
-  // format: string;
-  // videoUploaded = false;
+  youtubeUrl: string;
   localUpload = false;
   youtubeUpload = false;
 
@@ -68,7 +76,8 @@ export class TestComponent {
 
   @ViewChild('pitchContainer') pitchContainer: ElementRef;
   @ViewChild('youtubePlayerContainer') youtubePlayerContainer: ElementRef;
-  @ViewChild('localVideoPlayer') localVideoPlayer: HTMLVideoElement;
+
+  @ViewChild('jersey') jerseyInput: ElementRef;
 
   playerYT: any;
 
@@ -84,6 +93,7 @@ export class TestComponent {
   // @ViewChild('fileInput') fileInput: ElementRef;
   @ViewChild('closeModal') closeModal: ElementRef;
   @ViewChild('switchButton') switchButton: ElementRef;
+  @ViewChild('localVideoPlayer') localVideoPlayer!: ElementRef;
 
   playerJersey = '';
   mainEvent = '';
@@ -96,35 +106,26 @@ export class TestComponent {
     private eventService: EventService,
     private playerService: PlayersService,
     private exportService: ExportService,
-    private playersService: PlayersService,
     private elementRef: ElementRef
   ) {}
 
   ngOnInit(): void {
-    const input = document.querySelector<HTMLInputElement>('#video-url-input');
-    // const videoContainer =
-    //   document.querySelector<HTMLDivElement>('#video-container');
+    this.setUpLocalVideoPlayer();
+    this.getConfigurations();
+    this.getPlayers();
 
+    if (this.allPlayersEnteredSuccessfully(this.onFieldPlayers)) {
+      this.areAllPlayersFilled = true;
+    }
+
+    this.initializeAll();
+    this.getEvents();
+  }
+
+  setUpLocalVideoPlayer() {
+    const input = document.querySelector<HTMLInputElement>('#video-url-input');
     const imageButton =
       this.elementRef.nativeElement.querySelector('#imageButton');
-
-    // if (input && videoContainer) {
-    //   input.addEventListener('change', (event: Event) => {
-    //     const target = event.target as HTMLInputElement;
-    //     const file = target.files?.[0];
-    //     if (file) {
-    //       const url = URL.createObjectURL(file);
-    //       videoContainer.innerHTML = `
-    //         <video width="100%" height="auto" src="${url}" controls></video>
-    //       `;
-    //       // Hide the input element
-    //       // input.style.display = 'none';
-    //       this.localUpload = true;
-    //       this.localVideoPlayer = document.querySelector<HTMLVideoElement>(
-    //         '#video-container video'
-    //       );
-    //     }
-    //   });
 
     if (input && imageButton) {
       imageButton.addEventListener('click', () => {
@@ -132,43 +133,47 @@ export class TestComponent {
       });
 
       input.addEventListener('change', (event: Event) => {
-        if (this.youtubeUpload) {
-          this.destroyYoutubePlayer();
-          this.youtubeUpload = false;
-        }
         const target = event.target as HTMLInputElement;
         const file = target.files?.[0];
         if (file) {
-          this.source = 'local';
           this.localUpload = true;
-          this.youtubeUpload = false;
+          this.destroyYoutubePlayer();
           const url = URL.createObjectURL(file);
-          this.url = url;
-          const videoContainer =
-            this.elementRef.nativeElement.querySelector('#video-container');
-          videoContainer.innerHTML = `
-            <video width="100%" height="auto" src="${url}" controls></video>
-          `;
-          // input.style.display = 'none';
-          this.localVideoPlayer = this.elementRef.nativeElement.querySelector(
-            '#video-container video'
-          );
+          this.localVideoPlayer.nativeElement.src = url;
+          this.localVideoPlayer.nativeElement.style.display = 'block'; // Show the video element
           input.value = '';
         }
       });
     }
+  }
 
-    this.playerDataSubscription = this.playerService
-      .getPlayerDataObservable()
+  getConfigurations() {
+    const playing = this.playerService.getConfiguration('playing');
+    const formation = this.playerService.getConfiguration('formation');
+
+    this.selectedPlaying = playing ? playing : '';
+    this.selectedFormation = formation ? formation : '';
+  }
+
+  getPlayers() {
+    this.onFieldPlayerDataSubscription = this.playerService
+      .getOnFieldPlayerDataObservable()
       .subscribe((data) => {
-        this.allPlayers = data;
+        this.onFieldPlayers = data;
       });
-    this.allPlayers = this.playerService.getPlayerData();
-    if (this.allPlayersEnteredSuccessfully(this.allPlayers)) {
-      this.areAllPlayersFilled = true;
-    }
-    this.initializeAll();
+    this.onListPlayerDataSubscription = this.playerService
+      .getOnListPlayerDataObservable()
+      .subscribe((data) => {
+        this.onListPlayers = data;
+      });
 
+    this.onFieldPlayers = this.playerService.getOnFieldPlayerData();
+    this.onListPlayers = this.playerService.getOnListPlayerData();
+
+    this.setFormation();
+  }
+
+  getEvents() {
     this.playerJerseySubscription = this.eventService
       .getCurrentPlayerObservable()
       .subscribe((playerJersey) => {
@@ -195,7 +200,7 @@ export class TestComponent {
         this.playerYT = new (window as any).YT.Player(
           this.youtubePlayerContainer.nativeElement,
           {
-            videoId: this.getVideoId(this.url),
+            videoId: this.getVideoId(this.youtubeUrl),
             events: {
               onReady: () => {},
               onStateChange: (event: any) => {},
@@ -217,10 +222,8 @@ export class TestComponent {
   }
 
   openModalClicked() {
-    if (this.url) {
-      // this.fileInput.nativeElement.value = '';
-      this.url = undefined;
-      // this.videoUploaded = false;
+    if (this.youtubeUrl) {
+      this.youtubeUrl = '';
     }
   }
 
@@ -231,92 +234,32 @@ export class TestComponent {
     }
     if (this.videoYtUrl) {
       this.source = 'youtube';
-      this.url = this.videoYtUrl;
-      // this.videoUploaded = true;
+      this.youtubeUrl = this.videoYtUrl;
     }
   }
 
-  // for LOCAL video
-  // onSelectFile(event: any) {
-  //   const file = event.target.files && event.target.files[0];
-  //   if (file) {
-  //     var reader = new FileReader();
-  //     reader.readAsDataURL(file);
-  //     if (file.type.indexOf('image') > -1) {
-  //       this.format = 'image';
-  //     } else if (file.type.indexOf('video') > -1) {
-  //       this.format = 'video';
-  //     }
-  //     reader.onload = (event) => {
-  //       this.source = 'local';
-  //       this.videoUploaded = true;
-  //       this.url = (<FileReader>event.target).result;
-  //     };
-  //   }
-  // }
-
   onDoneClickYT() {
     // TOOLBAR
-    if (this.url && this.source === 'youtube') {
+    if (this.youtubeUrl && this.source === 'youtube') {
       this.localUpload = false;
       this.youtubeUpload = true;
       this.closeModal.nativeElement.click();
       this.initYoutubePlayer();
-
-      // this.onVideoUpload.emit({
-      //   source: this.source,
-      //   url: this.url,
-      //   videoUploaded: this.videoUploaded,
-      //   format: this.format,
-      // });
-
-      // TAGGER
-      // this.url = event.url;
-      // this.videoUploaded = event.videoUploaded;
-      // this.format = event.format;
-      // if (this.source === 'local') {
-      //   this.localUpload = true;
-      //   this.youtubeUpload = false;
-      // }
-      //  else if (this.source === 'youtube') {
-      //   this.localUpload = false;
-      //   this.youtubeUpload = true;
-      //   this.initYoutubePlayer();
-      // }
     } else {
       alert('Please upload a video');
     }
   }
 
-  taggingButtonClicked(event: any) {
+  taggingButtonClicked() {
     // TOOLBAR
     this.editModeON = !this.editModeON;
-    this.switchValue = this.editModeON ? '' : 'ballerMetrics'; // to enable/disable switch
+    this.switchValue = this.editModeON ? '' : 'ballerMetrics';
     this.currentMode = this.editModeON ? 'Edit mode' : 'Tagging mode';
     this.teamReadOnly = this.currentMode === 'Tagging mode' ? true : false;
-    // this.taggingButtonClicked.emit({
-    //   buttonLabel: this.taggingButtonLabel,
-    //   teamName: this.currentTeam,
-    //   isEditable: this.editModeON,
-    // });
-    // this.taggingButtonLabel = this.editModeON
-    //   ? 'Start Tagging'
-    //   : 'Stop tagging';
 
     //TAGGER
-    if (!this.allPlayersEnteredSuccessfully(this.allPlayers)) {
+    if (!this.allPlayersEnteredSuccessfully(this.onFieldPlayers)) {
       alert('Some Players are missing!');
-    } else {
-      // this.editModeON = event.isEditable;
-      if (event.buttonLabel === 'Start Tagging') {
-        // this.currentTeam = event.teamName;
-        this.allPlayers.filter((player) =>
-          player.id === 'p0' ? (player.name = this.currentTeam) : player.name
-        );
-        //Event fetching logic
-      } else if (event.buttonLabel === 'End Tagging') {
-        alert('Thanks! players tagged successfully');
-      }
     }
 
     this.taggingButtonLabel = this.editModeON
@@ -324,7 +267,7 @@ export class TestComponent {
       : 'Stop tagging';
   }
 
-  allPlayersEnteredSuccessfully(players: Player[]) {
+  allPlayersEnteredSuccessfully(players: Player2[]) {
     for (const player of players) {
       if (player.name === '' || player.jersey === '') {
         return false;
@@ -444,22 +387,22 @@ export class TestComponent {
   }
 
   handleBackward() {
+    const video: HTMLVideoElement = this.localVideoPlayer.nativeElement;
     if (this.playerYT) {
       const currentTime = this.playerYT.getCurrentTime();
       this.playerYT.seekTo(currentTime - 1, true);
-    } else if (this.localVideoPlayer) {
-      const video = this.localVideoPlayer;
-      video.currentTime -= 1;
+    } else if (video && this.localUpload) {
+      video.currentTime -= 2;
     }
   }
 
   handleForward() {
+    const video: HTMLVideoElement = this.localVideoPlayer.nativeElement;
     if (this.playerYT) {
       const currentTime = this.playerYT.getCurrentTime();
       this.playerYT.seekTo(currentTime + 1, true);
-    } else if (this.localVideoPlayer) {
-      const video = this.localVideoPlayer;
-      video.currentTime += 1;
+    } else if (video && this.localUpload) {
+      video.currentTime += 2;
     }
   }
 
@@ -483,16 +426,20 @@ export class TestComponent {
   }
 
   togglePlayPause(action: string) {
-    const videoElement = this.localVideoPlayer;
+    const video: HTMLVideoElement = this.localVideoPlayer.nativeElement;
     const playerState = this.playerYT?.getPlayerState();
 
-    if (videoElement && this.localUpload) {
+    if (video && this.localUpload && !this.youtubeUpload) {
       if (action === 'both') {
-        videoElement.paused ? videoElement.play() : videoElement.pause();
+        video.paused ? video.play() : video.pause();
       } else if (action === 'pause') {
-        videoElement.pause();
+        video.pause();
       }
-    } else if (playerState !== undefined && this.youtubeUpload) {
+    } else if (
+      playerState !== undefined &&
+      this.youtubeUpload &&
+      !this.localUpload
+    ) {
       if ((playerState === 1 && action === 'both') || action === 'pause') {
         this.playerYT.pauseVideo();
       } else if (
@@ -510,8 +457,10 @@ export class TestComponent {
   handleShiftKey(event: KeyboardEvent) {
     if (event.location === 2 && !this.editModeON) {
       const speed = event.type === 'keydown' ? 2 : 1;
-      if (this.localVideoPlayer && this.localUpload) {
-        this.localVideoPlayer.playbackRate = speed;
+      const video: HTMLVideoElement = this.localVideoPlayer.nativeElement;
+
+      if (video && this.localUpload) {
+        video.playbackRate = speed;
       } else if (this.playerYT && this.youtubeUpload) {
         this.playerYT.setPlaybackRate(speed);
       }
@@ -534,13 +483,13 @@ export class TestComponent {
 
   selectedPlayerIndex: number | null = null;
 
-  handlePlayerClick(selectedPlayer: Player) {
+  handlePlayerClick(selectedPlayer: Player2) {
     if (this.editModeON) {
       const plyJersey = prompt('Enter jersey');
       const plyName = prompt('Enter player name');
 
       if (plyJersey !== null && plyName !== null) {
-        const updatedLineup = [...this.allPlayers];
+        const updatedLineup = [...this.onFieldPlayers];
         const playerIndex = updatedLineup.findIndex(
           (player) => player.id === selectedPlayer.id
         );
@@ -552,16 +501,16 @@ export class TestComponent {
           };
         }
 
-        this.allPlayers = updatedLineup;
-        this.playerService.updatePlayerData(this.allPlayers);
+        this.onFieldPlayers = updatedLineup;
+        this.playerService.updatePlayerData(this.onFieldPlayers);
 
-        if (this.allPlayersEnteredSuccessfully(this.allPlayers)) {
+        if (this.allPlayersEnteredSuccessfully(this.onFieldPlayers)) {
           this.areAllPlayersFilled = true;
         }
       }
     } else {
       this.togglePlayPause('pause');
-      for (let player of this.allPlayers) {
+      for (let player of this.onFieldPlayers) {
         if (player.id === selectedPlayer.id) {
           this.currentPlayerJersey = player.jersey;
           this.currentPlayerName = player.name;
@@ -579,7 +528,7 @@ export class TestComponent {
     let currentTimeInSeconds: number | undefined;
     if (this.localVideoPlayer && this.localUpload) {
       const video = this.localVideoPlayer;
-      currentTimeInSeconds = video.currentTime;
+      currentTimeInSeconds = video.nativeElement.currentTime;
     } else if (this.playerYT && this.youtubeUpload) {
       currentTimeInSeconds = this.playerYT.getCurrentTime();
     }
@@ -734,7 +683,8 @@ export class TestComponent {
     const eventsData = this.eventService.getAllEvents();
     if (eventsData.length) {
       if (confirm('Are you sure you want to export the csv file?')) {
-        this.exportService.exportToCsv(eventsData, 'bm-events-data.csv');
+        const fileName = prompt('Enter file name: ');
+        this.exportService.exportToCsv(eventsData, `${fileName}.csv`);
       }
     } else alert('Why export blank csv? Please tag data first');
   }
@@ -742,7 +692,7 @@ export class TestComponent {
   handleReset() {
     if (confirm('Are you sure you want to reset all??')) {
       this.eventService.deleteAllEvents();
-      this.playersService.resetAllPlayers();
+      this.playerService.resetAllPlayers();
       this.resetConfigurations();
     }
   }
@@ -750,7 +700,6 @@ export class TestComponent {
   resetConfigurations() {
     this.switchButton.nativeElement.click();
     this.currentTeam = '';
-    // this.videoUploaded = false;
     this.destroyYoutubePlayer();
     this.destroyLocalPlayer();
   }
@@ -758,17 +707,16 @@ export class TestComponent {
   destroyLocalPlayer() {
     if (this.localVideoPlayer || this.localUpload) {
       this.localUpload = false;
-      this.localVideoPlayer.pause();
-      this.localVideoPlayer.parentNode?.removeChild(this.localVideoPlayer);
-      this.url = undefined;
+      this.localVideoPlayer.nativeElement.pause();
+      this.localVideoPlayer.nativeElement.style.display = 'none';
     }
   }
 
   destroyYoutubePlayer() {
     if (this.youtubeUpload && this.playerYT) {
       this.youtubeUpload = false;
-      this.playerYT.destroy(); // Destroy the YouTube player instance
-      this.youtubePlayerContainer.nativeElement.innerHTML = ''; // Remove the iframe from the DOM
+      this.playerYT.destroy();
+      this.youtubePlayerContainer.nativeElement.innerHTML = '';
       this.videoYtUrl = '';
       this.url = undefined;
     }
@@ -777,8 +725,205 @@ export class TestComponent {
   ngOnDestroy() {
     // Unsubscribe to avoid memory leaks
     this.playerDataSubscription.unsubscribe();
+    this.onFieldPlayerDataSubscription.unsubscribe();
+    this.onListPlayerDataSubscription.unsubscribe();
     this.playerJerseySubscription.unsubscribe();
     this.currentEventSubscription.unsubscribe();
     this.eventDataSubscription.unsubscribe();
+    this.playersConfigSubscription.unsubscribe();
+  }
+
+  ////////////////////////////// CONFIG RELATED CHANGES ////////////////////////////////////
+
+  /////////////////  PLAYING AND FORMATION /////////////////////
+
+  playingDDValues = PLAYING;
+  formationDDValues: string[] = [];
+  spaceArray: number[] = [];
+
+  selectedPlaying: string;
+  selectedFormation: string;
+
+  disableFormationdd: boolean = true;
+
+  @ViewChild('playing') playingRef: ElementRef;
+  @ViewChild('formation') formationRef: ElementRef;
+
+  onCongifModalOpen() {
+    if (this.selectedPlaying && this.selectedFormation) {
+      this.playingRef.nativeElement.value = this.selectedPlaying;
+      this.disableFormationdd = false;
+      this.formationDDValues =
+        POSSIBLE_FORMATIONS[parseInt(this.selectedPlaying)];
+    }
+  }
+
+  onSelectPlaying(event: any) {
+    const selectedValue = event?.target.value;
+    if (selectedValue) {
+      this.selectedPlaying = selectedValue;
+      this.playerService.setConfiguration('playing', this.selectedPlaying);
+      this.disableFormationdd = false;
+      this.formationDDValues =
+        POSSIBLE_FORMATIONS[parseInt(this.selectedPlaying)];
+    }
+  }
+
+  onSelectFormation(event: any) {
+    if (this.onFieldPlayers.length > parseInt(this.selectedPlaying)) {
+      alert('On-field players cannot be greater than Playing');
+    } else {
+      const selectedValue = event?.target.value;
+      if (selectedValue) {
+        this.selectedFormation = selectedValue;
+        this.playerService.setConfiguration(
+          'formation',
+          this.selectedFormation
+        );
+        this.setFormation();
+      }
+    }
+  }
+
+  setFormation() {
+    if (this.selectedFormation) {
+      const temp = this.selectedFormation.split('-');
+      this.spaceArray = [];
+      this.spaceArray.push(1);
+      for (let i = 0; i < temp.length - 1; i++) {
+        const currentLineup = parseInt(temp[i]);
+        this.spaceArray.push(this.spaceArray[i] + currentLineup);
+      }
+    } else this.spaceArray = [];
+
+    this.updateOrder();
+  }
+
+  /////////////////  PLAYER LIST CONTAINER /////////////////////
+
+  configPlayerJersey: string;
+  configPlayerName: string;
+
+  onListPlayers: Player2[] = [];
+
+  addPlayerOnList() {
+    if (this.configPlayerJersey && this.configPlayerName) {
+      // const temp = 'p' + this.onListPlayers.length.toString();
+      const playerObj = {
+        jersey: this.configPlayerJersey,
+        name: this.configPlayerName,
+        selected: false,
+      };
+
+      this.onListPlayers.push(playerObj);
+      this.playerService.updateOnListPlayerData(this.onListPlayers);
+
+      this.configPlayerJersey = '';
+      this.configPlayerName = '';
+
+      if (this.jerseyInput && this.jerseyInput.nativeElement) {
+        this.jerseyInput.nativeElement.focus();
+      }
+    } else alert('fields missing');
+  }
+
+  removePlayerFromListandField(player: any) {
+    this.onListPlayers = this.onListPlayers.filter(
+      (onListPlayer) => onListPlayer.name !== player.name
+    );
+    this.onFieldPlayers = this.onFieldPlayers.filter(
+      (onFieldPlayer) => onFieldPlayer.name !== player.name
+    );
+    this.playerService.updateOnFieldPlayerData(this.onFieldPlayers);
+    this.playerService.updateOnListPlayerData(this.onListPlayers);
+    this.updateOrder();
+  }
+
+  removeAllPlayerFromListandField() {
+    if (confirm('Are you sure you want to delete all players')) {
+      this.onListPlayers = [];
+      this.onFieldPlayers = [];
+
+      this.playerService.updateOnFieldPlayerData(this.onFieldPlayers);
+      this.playerService.updateOnListPlayerData(this.onListPlayers);
+    }
+  }
+
+  /////////////////// DRAG DROP CONTAINER //////////////////////////
+
+  onFieldPlayers: Player2[] = [];
+
+  addPlayerOnField(player: Player2) {
+    if (
+      this.onFieldPlayers &&
+      this.onFieldPlayers.length < parseInt(this.selectedPlaying)
+    ) {
+      if (!this.onFieldPlayers.some((obj) => obj.name === player.name)) {
+        this.onFieldPlayers.push(player);
+        this.playerService.updateOnFieldPlayerData(this.onFieldPlayers);
+        this.updateOrder();
+      } else {
+        alert('player already present on field');
+      }
+    } else {
+      alert('Max player limit reached');
+    }
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(
+      this.onFieldPlayers,
+      event.previousIndex,
+      event.currentIndex
+    );
+    this.updateOrder();
+  }
+
+  updateOrder() {
+    const formation = this.selectedFormation.split('-');
+    let players = this.onFieldPlayers;
+
+    if (players && players.length) {
+      players.forEach((player, index) => {
+        const playerId = 'p' + index.toString();
+        player.id = playerId;
+      });
+
+      // Update the first player
+      players[0].top = '45%';
+      players[0].left = '2%';
+
+      let playerIndex = 1; // Start from the second player
+
+      for (let i = 0; i < formation.length; i++) {
+        const formationCount = parseInt(formation[i]);
+
+        const posY = POSITION_Y[formationCount];
+        const posX = POSITION_X[formation.length];
+
+        for (let j = 0; j < formationCount; j++) {
+          if (playerIndex >= players.length) {
+            break;
+          }
+
+          players[playerIndex].top = posY[j];
+          players[playerIndex].left = posX[i];
+
+          playerIndex++;
+        }
+      }
+
+      this.onFieldPlayers = players;
+    }
+    console.log('updateOrder onFieldPalyers ===> ', this.onFieldPlayers);
+  }
+
+  removePlayerFromField(player: Player2) {
+    if (this.onFieldPlayers && this.onFieldPlayers.length) {
+      this.onFieldPlayers = this.onFieldPlayers.filter(
+        (onFieldPlayer) => onFieldPlayer.name !== player.name
+      );
+    }
+    this.updateOrder();
   }
 }

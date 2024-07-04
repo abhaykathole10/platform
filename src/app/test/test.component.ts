@@ -6,6 +6,7 @@ import {
   Coordinate,
   GoalArea,
   SubEvents,
+  GoalCoordinate,
 } from '../models/event-data.model';
 import { EventService } from '../services/event.service';
 import { PlayersService } from '../services/players.service';
@@ -31,7 +32,7 @@ import {
 })
 export class TestComponent {
   allSubTags: Subtag[] = ALLSUBTAGS;
-  allGoalAreas: GoalArea[] = ALLGOALAREAS;
+  // allGoalAreas: GoalArea[] = ALLGOALAREAS;
 
   private playerDataSubscription: Subscription;
   private onFieldPlayerDataSubscription: Subscription;
@@ -46,6 +47,7 @@ export class TestComponent {
   showPlayers = true;
   areAllPlayersFilled = false;
   switchSide = false;
+  enableGoalArea = false;
 
   // VIDEO
   url: any;
@@ -68,13 +70,14 @@ export class TestComponent {
 
   // SUBTAG & GOALAREA
   subtagsSelected: SubEvents;
-  goalAreaSelected: string = '';
+  goalAreaSelected: GoalCoordinate;
 
   latestDeleted = false;
 
   isScrolling: boolean = false;
 
   @ViewChild('pitchContainer') pitchContainer: ElementRef;
+  @ViewChild('goalContainer') goalContainer: ElementRef;
   @ViewChild('youtubePlayerContainer') youtubePlayerContainer: ElementRef;
 
   @ViewChild('jersey') jerseyInput: ElementRef;
@@ -380,7 +383,8 @@ export class TestComponent {
         this.eventService.setCurrentMainTag(this.currentEvent);
         this.enableSubtags(this.currentEvent);
         if (['Shot', 'Save', 'Penalty'].includes(this.currentEvent)) {
-          this.enableGoalAreas();
+          // this.enableGoalAreas();
+          this.enableGoalArea = true;
         }
       }
     }
@@ -475,11 +479,11 @@ export class TestComponent {
     }
   }
 
-  enableGoalAreas() {
-    for (let area of this.allGoalAreas) {
-      area.disabled = false;
-    }
-  }
+  // enableGoalAreas() {
+  //   for (let area of this.allGoalAreas) {
+  //     area.disabled = false;
+  //   }
+  // }
 
   selectedPlayerIndex: number | null = null;
 
@@ -581,12 +585,12 @@ export class TestComponent {
     }
   }
 
-  handleGoalArea(area: GoalArea) {
-    if (area) {
-      area.clicked = !area.clicked;
-      this.goalAreaSelected = area.name;
-    }
-  }
+  // handleGoalArea(area: GoalArea) {
+  //   if (area) {
+  //     area.clicked = !area.clicked;
+  //     this.goalAreaSelected = area.name;
+  //   }
+  // }
 
   handleMapMouseDown(event: MouseEvent) {
     if (!this.showPlayers) {
@@ -670,13 +674,14 @@ export class TestComponent {
       subtag.disabled = true;
       subtag.clicked = false;
     }
-    this.goalAreaSelected = '';
-    for (let area of this.allGoalAreas) {
-      area.disabled = true;
-      area.clicked = false;
-    }
+    this.goalAreaSelected = { gx: '', gy: '' };
+    // for (let area of this.allGoalAreas) {
+    //   area.disabled = true;
+    //   area.clicked = false;
+    // }
     this.latestDeleted = false;
     this.currentTime = '';
+    this.enableGoalArea = false;
   }
 
   exportToCSV() {
@@ -925,5 +930,39 @@ export class TestComponent {
       );
     }
     this.updateOrder();
+  }
+
+  handleGoalMouseDown(event: MouseEvent) {
+    if (this.enableGoalArea) {
+      const x = event.offsetX;
+      const y = event.offsetY;
+
+      const normalizedX = Math.round(
+        (x / this.goalContainer.nativeElement.offsetWidth) * this.xScale
+      );
+
+      const normalizedY = Math.round(
+        (y / this.goalContainer.nativeElement.offsetHeight) * this.yScale
+      );
+
+      const gX = normalizedX.toString();
+      const gY = normalizedY.toString();
+
+      // Check if Ontarget shots are inside a given limit
+      if (['Goal', 'Saved'].includes(this.subtagsSelected.outcome)) {
+        if (normalizedX < 12 || normalizedX > 109 || 16 > normalizedY) {
+          alert('Please tag inside the goal frame');
+        }
+      }
+
+      this.goalAreaSelected = { gx: gX, gy: gY };
+
+      const dot = document.createElement('div');
+      dot.className = 'red-dot';
+      dot.style.left = `${x}px`;
+      dot.style.top = `${y}px`;
+
+      this.goalContainer.nativeElement.appendChild(dot);
+    }
   }
 }

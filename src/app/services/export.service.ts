@@ -29,7 +29,7 @@ export class ExportService {
   private convertToCsv(data: DataItem[]): string {
     // Define the headers for your CSV
     const csvHeader =
-      'Team,Time,Jersey,Player,Event,X,Y,endX,endY,Foot,Outcome,Key Pass,Assist,Through Pass,Clearance,Take On,Hand Foul,Goal Area';
+      'Team,Time,Jersey,Player,Event,X,Y,endX,endY,Foot,Outcome,Key Pass,Assist,Through Pass,Clearance,Take On,Hand Foul,gX,gY';
 
     // Map each item in the data array to extract the desired properties
     const csvRows = data.map((item) => {
@@ -51,6 +51,10 @@ export class ExportService {
       const endX = end.x || '';
       const endY = end.y || '';
 
+      // Extract gX and gY from goalArea
+      const gX = goalArea.gx;
+      const gY = goalArea.gy;
+
       // Extract foot, outcome, keypass, assist, throughpass from subEvents
       const foot = subEvents.foot || '';
       const outcome = subEvents.outcome || '';
@@ -62,7 +66,7 @@ export class ExportService {
       const handfoul = subEvents.handfoul || '';
 
       // Join the extracted properties as a CSV row
-      return `${team},${time},${jersey},${name},${event},${X},${Y},${endX},${endY},${foot},${outcome},${keypass},${assist},${throughpass},${clearance},${takeon},${handfoul},${goalArea}`;
+      return `${team},${time},${jersey},${name},${event},${X},${Y},${endX},${endY},${foot},${outcome},${keypass},${assist},${throughpass},${clearance},${takeon},${handfoul},${gX},${gY}`;
     });
 
     // Join the header and rows with newline characters to form the CSV content

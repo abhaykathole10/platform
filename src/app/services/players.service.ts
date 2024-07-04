@@ -24,9 +24,16 @@ export class PlayersService {
 
   getPlayerData() {
     const storedPlayerData = localStorage.getItem('player-data');
-    this.playerDataArray = storedPlayerData
-      ? JSON.parse(storedPlayerData)
-      : this.defaultPlayers;
+    if (storedPlayerData) {
+      const playerData = JSON.parse(storedPlayerData);
+      if (playerData.length > 0) {
+        this.playerDataArray = playerData;
+      } else {
+        this.playerDataArray = this.defaultPlayers;
+      }
+    } else {
+      this.playerDataArray = this.defaultPlayers;
+    }
     return this.playerDataArray;
   }
 

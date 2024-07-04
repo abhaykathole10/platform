@@ -19,7 +19,8 @@
         <th>Clearance</th>
         <th>Take On</th>
         <th>Hand Foul</th>
-        <th>Goal Area</th>
+        <th>gX</th>
+        <th>gY</th>
         <th>delete</th>
       </tr>
     </thead>
@@ -43,7 +44,8 @@
           <td>{{ dataItems[i].subEvents.clearance }}</td>
           <td>{{ dataItems[i].subEvents.takeon }}</td>
           <td>{{ dataItems[i].subEvents.handfoul }}</td>
-          <td>{{ dataItems[i].goalArea }}</td>
+          <td>{{ dataItems[i].goalArea.gx }}</td>
+          <td>{{ dataItems[i].goalArea.gy }}</td>
           <td>
             <button
               type="button"

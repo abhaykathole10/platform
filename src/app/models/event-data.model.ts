@@ -4,6 +4,11 @@ export interface Coordinate {
   y: string;
 }
 
+export interface GoalCoordinate {
+  gx: string;
+  gy: string;
+}
+
 export interface DataItem {
   id: string;
   team: string;
@@ -14,7 +19,7 @@ export interface DataItem {
   start: Coordinate;
   end: Coordinate;
   subEvents: SubEvents;
-  goalArea: string;
+  goalArea: GoalCoordinate;
 }
 
 export interface Player {

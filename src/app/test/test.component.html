@@ -187,7 +187,25 @@
     </div>
 
     <!-- GOAL SKELETON -->
-    <div class="goal-div pt-1">
+    <div
+      class="goal-div"
+      [ngStyle]="{
+        'pointer-events': enableGoalArea ? 'auto' : 'none',
+        cursor: enableGoalArea ? 'crosshair' : 'initial',
+        opacity: enableGoalArea ? '1' : '0.2'
+      }"
+    >
+      <img
+        #goalContainer
+        src="../../assets/goalpost.png"
+        alt="goal_post"
+        width="100%"
+        (mousedown)="handleGoalMouseDown($event)"
+      />
+    </div>
+
+    <!-- GOAL SKELETON -->
+    <!-- <div class="goal-div pt-1">
       <div class="goal-grid">
         <div
           *ngFor="let area of allGoalAreas"
@@ -200,7 +218,7 @@
           {{ area.name }}
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </div>
 

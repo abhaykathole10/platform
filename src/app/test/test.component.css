@@ -108,6 +108,16 @@
   width: 100%;
   height: auto;
   background-color: white;
+  border: 1px solid red;
+  margin-top: 1px;
+  position: relative;
+}
+
+/* GOAL MAP */
+.goal-div {
+  width: 100%;
+  height: auto;
+  background-color: white;
 }
 
 .goal-grid {

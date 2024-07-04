@@ -6,6 +6,7 @@ import {
   Coordinate,
   GoalArea,
   SubEvents,
+  GoalCoordinate,
 } from '../models/event-data.model';
 import { EventService } from '../services/event.service';
 import { PlayersService } from '../services/players.service';
@@ -36,6 +37,7 @@ export class TaggerComponent {
   showPlayers = true;
   areAllPlayersFilled = false;
   switchSide = false;
+  enableGoalArea = false;
 
   // VIDEO
   url: string;
@@ -59,7 +61,7 @@ export class TaggerComponent {
 
   // SUBTAG & GOALAREA
   subtagsSelected: SubEvents;
-  goalAreaSelected: string = '';
+  goalAreaSelected: GoalCoordinate;
 
   latestDeleted = false;
 
@@ -261,7 +263,7 @@ export class TaggerComponent {
         this.eventService.setCurrentMainTag(this.currentEvent);
         this.enableSubtags(this.currentEvent);
         if (['Shot', 'Save', 'Penalty'].includes(this.currentEvent)) {
-          this.enableGoalAreas();
+          this.enableGoalArea = true;
         }
       }
     }
@@ -350,11 +352,11 @@ export class TaggerComponent {
     }
   }
 
-  enableGoalAreas() {
-    for (let area of this.allGoalAreas) {
-      area.disabled = false;
-    }
-  }
+  // enableGoalAreas() {
+  //   for (let area of this.allGoalAreas) {
+  //     area.disabled = false;
+  //   }
+  // }
 
   selectedPlayerIndex: number | null = null;
 
@@ -459,7 +461,7 @@ export class TaggerComponent {
   handleGoalArea(area: GoalArea) {
     if (area) {
       area.clicked = !area.clicked;
-      this.goalAreaSelected = area.name;
+      // this.goalAreaSelected = area.name;
     }
   }
 
@@ -545,11 +547,11 @@ export class TaggerComponent {
       subtag.disabled = true;
       subtag.clicked = false;
     }
-    this.goalAreaSelected = '';
-    for (let area of this.allGoalAreas) {
-      area.disabled = true;
-      area.clicked = false;
-    }
+    this.goalAreaSelected = { gx: '', gy: '' };
+    // for (let area of this.allGoalAreas) {
+    //   area.disabled = true;
+    //   area.clicked = false;
+    // }
     this.latestDeleted = false;
     this.currentTime = '';
   }
